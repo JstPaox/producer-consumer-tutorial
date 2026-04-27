@@ -230,8 +230,8 @@ const Simulator = forwardRef(function Simulator({ model = 'semaphore' }, ref) {
             
             <div className="space-y-4">
               <div className={`p-4 rounded-xl border-2 transition-all ${
-                selectedModel === 'semaphore' 
-                  ?-semc > 0 ? 'bg-green-500/20 border-green-500' : 'bg-red-500/10 border-red-500/50'
+                selectedModel === 'semaphore'
+                  ? semc > 0 ? 'bg-green-500/20 border-green-500' : 'bg-red-500/10 border-red-500/50'
                   : 'bg-slate-700/50 border-slate-600'
               }`}>
                 <div className="flex items-center justify-between mb-2">
@@ -247,7 +247,7 @@ const Simulator = forwardRef(function Simulator({ model = 'semaphore' }, ref) {
               
               <div className={`p-4 rounded-xl border-2 transition-all ${
                 selectedModel === 'semaphore'
-                  ? sempit > 0 ? 'bg-green-500/20 border-green-500' : 'bg-red-500/10 border-red-500/50'
+                  ? sempit > 0 ? 'bg- green-500/20 border-green-500' : 'bg-red-500/10 border-red-500/50'
                   : 'bg-slate-700/50 border-slate-600'
               }`}>
                 <div className="flex items-center justify-between mb-2">

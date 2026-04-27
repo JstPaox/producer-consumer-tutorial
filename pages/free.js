@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
+import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 const CodeViewer = dynamic(() => import('../components/CodeViewer'), { ssr: false });
@@ -76,7 +77,7 @@ export default function FreePath() {
             <h1 className="text-3xl font-bold text-white mb-2">Esplora Libero</h1>
             <p className="text-slate-400">Tutti i listati C# del corso ({data.codeBlocks.length})</p>
           </div>
-          <a href="/" className="text-slate-400 hover:text-white transition-colors">← Torna alla Home</a>
+          <Link href="/" className="text-slate-400 hover:text-white transition-colors">← Torna alla Home</Link>
         </div>
       </header>
 

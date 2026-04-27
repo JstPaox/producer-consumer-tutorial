@@ -17,7 +17,7 @@ const chapterData = {
       'Buffer': 'Zona di memoria condivisa dove il produttore scrive e il consumatore legge',
       'Thread': 'Unità di esecuzione parallela all\'interno di un processo',
       'Mutex': 'Lock mutuo esclusivo: solo un thread alla volta può accedere alla risorsa',
-      'Semaforo': 'Contatore cheblocca/sblocca thread in base alla disponibilità di risorse',
+      'Semaforo': 'Contatore che blocca i thread',
     },
     keyPoints: [
       'Il produttore produce dati, il consumatore li legge',
@@ -32,7 +32,7 @@ const chapterData = {
   semaphore: {
     title: 'Semafori (Semaphore)',
     subtitle: 'Sincronizzazione con System.Threading.Semaphore',
-    what: 'Un Semaphore è un contatore cheblocca i thread quando raggiunge 0. Initialize con (初始值, 最大值).',
+    what: 'Un Semaphore è un contatore che blocca i thread quando raggiunge 0. Initialize con (valore_iniziale, valore_massimo).',
     how: 'semc = new Semaphore(0, 1) → parte bloccato (il consumatore aspetta)\nsemp = new Semaphore(1, 1) → parte sbloccato (il produttore può produrre)',
     important: 'I semafori hanno DUE parametri: (valore_iniziale, valore_massimo)',
     methods: {
@@ -97,7 +97,7 @@ namespace produttore_consumatore_thr
   queue: {
     title: 'BlockingCollection',
     subtitle: 'Queue thread-safe con .NET',
-    what: 'BlockingCollection<T> è una queue thread-safe cheblocca automaticamente quando è vuota (Take) o piena (Add).',
+    what: 'BlockingCollection<T> è una queue thread-safe che blocca automaticamente quando è vuota (Take) o piena (Add).',
     why: 'Non serve gestire manualmente semafori - .NET gestisce tutto automaticamente.',
     code: `using System;
 using System.Threading;
@@ -385,7 +385,7 @@ namespace cons_socket
       'Ricorda i valori iniziali: semc=0, sempit=1',
       'WaitOne() blocca, Release() sblocca',
       'BlockingCollection gestisce tutto automaticamente',
-      'Never usar equi busy wait - spreca CPU!',
+      'Never usare il busy wait - spreca CPU!',
       'Socket: Bind → Listen → Accept → Send/Receive',
       'Named Pipe: velocissimo per IPC locale',
     ],
@@ -514,7 +514,7 @@ export default function Learn() {
               <CodeViewer code={chapter.codeServer} />
             </div>
             <div className="card bg-slate-800/50 border border-slate-700/50">
-              <h2 className="font-bold text-white mb-4">Codice Client ( Consumatore)</h2>
+              <h2 className="font-bold text-white mb-4">Codice Client (Consumatore)</h2>
               <CodeViewer code={chapter.codeClient} />
             </div>
           </div>
