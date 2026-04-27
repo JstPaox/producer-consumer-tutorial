@@ -607,15 +607,29 @@ export default function Learn() {
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between mt-8">
-          <div></div>
-          <button onClick={() => {
-            const ids = Object.keys(chapterData);
-            const idx = ids.indexOf(id);
-            if (idx < ids.length - 1) router.push(`/learn/${ids[idx + 1]}`);
-            else router.push('/');
-          }} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-500 cursor-pointer">
-            {Object.keys(chapterData).indexOf(id) < Object.keys(chapterData).length - 1 ? 'Capitolo Successivo →' : 'Torna alla Home'}
+        <div className="flex justify--between mt-8">
+          <button onClick={() => router.push('/')} className="px-6 py-3 bg-slate-700 text-slate-300 rounded-xl hover:bg-slate-600 cursor-pointer">
+            ← Home
+          </button>
+          <button
+            onClick={() => {
+              const ids = Object.keys(chapterData);
+              const idx = ids.indexOf(id);
+              if (!isComplete) {
+                alert('Completa il quiz prima di procedere!');
+                return;
+              }
+              if (idx < ids.length - 1) router.push(`/learn/${ids[idx + 1]}`);
+              else router.push('/');
+            }}
+            disabled={!isComplete}
+            className={`px-6 py-3 rounded-xl font-semibold transition-alls ${
+              isComplete
+                ? 'bg-indigo-600 text-white hover:bg-indigo-500 cursor-pointer'
+                : 'bg-slate-700 text-slate-500 cursor-not-allowed'
+            }`}
+          >
+            {!isComplete ? 'Completa quiz per continuare' : idx < Object.keys(chapterData).length - 1 ? 'Capitolo Successivo →' : 'Fine'}
           </button>
         </div>
       </main>
