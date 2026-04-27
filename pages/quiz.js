@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 
 const Quiz = dynamic(() => import('../components/Quiz'), { ssr: false });
 
-const defaultSections = [
+const sectionsList = [
   { id: 'base', title: 'Concetti Base' },
   { id: 'semaphore', title: 'Semafori' },
   { id: 'queue', title: 'BlockingCollection' },
@@ -16,60 +16,49 @@ const defaultSections = [
   { id: 'advanced', title: 'Approfondimenti' },
 ];
 
-const sectionTitles = {
-  base: 'Concetti Fondamentali',
-  semaphore: 'Semafori',
-  queue: 'BlockingCollection',
-  busywait: 'Busy Waiting',
-  thread: 'Thread in C#',
-  pipe: 'Named Pipe',
-  socket: 'Socket TCP',
-  memory: 'Memoria Condivisa',
-  comparison: 'Confronto Pattern',
-  advanced: 'Approfondimenti',
-};
-
-export default function QuizLiberi() {
+export default function QuizPage() {
   const [selectedSection, setSelectedSection] = useState(null);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [quizList, setQuizList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState('sections');
+  const [currentView, setCurrentView] = useState('sections');
+  const [quizData, setQuizData] = useState(null);
 
   useEffect(() => {
-    if (selectedSection && step === 'quizzes') {
-      setLoading(true);
-      fetch('/data/quizdata.json')
-        .then(res => res.json())
-        .then(data => {
-          const section = data.sections.find(s => s.id === selectedSection);
-          if (section) {
-            setQuizList(section.quizzes.map((q, i) => ({ id: q.id, title: q.title, index: i + 1 })));
-          } else {
-            setQuizList([]);
-          }
-          setLoading(false);
-        })
-        .catch(() => {
-          setQuizList([]);
-          setLoading(false);
-        });
+    fetch('/data/quizdata.json')
+      .then(r => r.json())
+      .then(data => setQuizData(data))
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    if (selectedSection && quizData && currentView === 'quizzes') {
+      const section = quizData.sections.find(s => s.id === selectedSection);
+      if (section) {
+        console.log('Loading quizzes for section:', selectedSection, 'count:', section.quizzes.length);
+        setQuizList(section.quizzes.map((q, i) => ({ id: q.id, title: q.title, index: i + 1 })));
+      }
     }
-  }, [selectedSection, step]);
+  }, [selectedSection, quizData, currentView]);
 
   const handleSectionClick = (sectionId) => {
     setSelectedSection(sectionId);
-    setStep('quizzes');
     setSelectedQuiz(null);
-    setQuizList([]);
+    setCurrentView('quizzes');
+  };
+
+  const handleQuizClick = (quizId, title) => {
+    setSelectedQuiz({ id: quizId, title: title });
+    setCurrentView('quiz');
   };
 
   const handleBack = () => {
-    if (selectedQuiz) {
+    if (currentView === 'quiz') {
       setSelectedQuiz(null);
-    } else if (step === 'quizzes') {
-      setStep('sections');
+      setCurrentView('quizzes');
+    } else if (currentView === 'quizzes') {
       setSelectedSection(null);
+      setCurrentView('sections');
       setQuizList([]);
     }
   };
@@ -81,31 +70,22 @@ export default function QuizLiberi() {
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Quiz Liberi</h1>
             <p className="text-slate-400">
-              {step === 'sections' && 'Scegli una sezione!'}
-              {step === 'quizzes' && !selectedQuiz && 'Scegli un quiz!'}
-              {selectedQuiz && selectedQuiz.title}
+              {currentView === 'sections' && '1. Scegli una sezione'}
+              {currentView === 'quizzes' && !selectedQuiz && '2. Scegli un quiz'}
+              {currentView === 'quiz' && selectedQuiz?.title}
             </p>
           </div>
-          <button 
-            onClick={handleBack}
-            className="text-slate-400 hover:text-white transition-colors"
-          >
+          <button onClick={handleBack} className="text-slate-400 hover:text-white transition-colors">
             ← Indietro
           </button>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto p-6">
-        {loading && (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full"></div>
-          </div>
-        )}
-
-        {!loading && step === 'sections' && (
+        {currentView === 'sections' && (
           <div className="mb-8">
             <div className="grid md:grid-cols-2 gap-3">
-              {defaultSections.map((section, idx) => (
+              {sectionsList.map((section, idx) => (
                 <button
                   key={section.id}
                   onClick={() => handleSectionClick(section.id)}
@@ -121,13 +101,13 @@ export default function QuizLiberi() {
           </div>
         )}
 
-        {!loading && step === 'quizzes' && !selectedQuiz && (
+        {currentView === 'quizzes' && !selectedQuiz && (
           <div className="mb-8">
             <div className="grid md:grid-cols-2 gap-3">
               {quizList.map((quiz) => (
                 <button
                   key={quiz.id}
-                  onClick={() => setSelectedQuiz({ id: `${selectedSection}.${quiz.id}`, title: quiz.title })}
+                  onClick={() => handleQuizClick(`${selectedSection}.${quiz.id}`, quiz.title)}
                   className="p-4 rounded-xl text-left transition-all cursor-pointer bg-slate-800/50 border-2 border-slate-700 hover:border-indigo-500 hover:bg-indigo-500/10"
                 >
                   <div className="flex items-center justify-between">
@@ -145,19 +125,19 @@ export default function QuizLiberi() {
           </div>
         )}
 
-        {selectedQuiz && (
+        {currentView === 'quiz' && selectedQuiz && (
           <div className="card bg-slate-800/50 border border-slate-700/50">
             <Quiz topic={selectedQuiz.id} showAllTopics={false} />
           </div>
         )}
 
         <div className="mt-8 bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6">
-          <h3 className="font-bold text-amber-400 mb-4">💡 Come funziona</h3>
+          <h3 className="font-bold text-amber-400 mb-4">Come funziona</h3>
           <ul className="text-slate-300 space-y-2 text-sm">
-            <li>• <strong className="text-white">10 sezioni</strong> da 10 quiz da 10 domande ciascuna</li>
-            <li>• <strong className="text-white">1000 domande</strong> totali</li>
-            <li>• Ogni quiz ha domande in ordine casuale</li>
-            <li>• Ripeti per imparare!</li>
+            <li>- 10 sezioni con 10 quiz ciascuna</li>
+            <li>- Scegli una sezione</li>
+            <li>- Scegli un quiz da 10 domande</li>
+            <li>- Ogni quiz ha domande in ordine casuale</li>
           </ul>
         </div>
       </main>
