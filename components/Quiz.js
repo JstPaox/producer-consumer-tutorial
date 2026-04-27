@@ -55,6 +55,15 @@ export default function Quiz({ topic, onComplete, showAllTopics = false }) {
     
     if (showAllTopics) {
       questionsList = getAllQuestions();
+    } else if (topicName.includes('.')) {
+      const [sectionId, quizId] = topicName.split('.');
+      const section = sections[sectionId];
+      if (section) {
+        const quiz = section.quizzes.find(q => q.id === quizId);
+        if (quiz) {
+          questionsList = quiz.questions;
+        }
+      }
     } else if (sections[topicName]) {
       const section = sections[topicName];
       const allQ = [];
