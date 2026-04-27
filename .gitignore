@@ -10,3 +10,7 @@ producer-consumer-site/
 .vercel
 
 .vercel
+
+.env
+.next
+node_modules
