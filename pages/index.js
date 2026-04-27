@@ -50,6 +50,7 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-4">
           <Link href="/free"><span className="text-slate-400 hover:text-white transition-colors cursor-pointer">Tutti i Listati</span></Link>
+          <Link href="/quiz"><span className="text-slate-400 hover:text-white transition-colors cursor-pointer">Quiz</span></Link>
           <button onClick={() => localStorage.clear() || window.location.reload()} className="text-slate-500 hover:text-red-400 text-sm cursor-pointer">Reset Progresso</button>
         </div>
       </nav>
@@ -69,9 +70,6 @@ export default function Home() {
             Impara <strong className="text-white">tutti i pattern</strong> di comunicazione tra thread e processi in C#. 
             Ogni concetto, ogni listato, ogni dettaglio.
           </p>
-          <p className="text-sm text-slate-500">
-            Domani hai la verifica? Studia qui. Il sito contiene tutto quello che c'è nel documento.
-          </p>
         </div>
 
         {/* Progress */}
@@ -84,18 +82,18 @@ export default function Home() {
             <div className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full transition-all duration-500" style={{ width: `${(completedCount/totalChapters)*100}%` }} />
           </div>
           {completedCount === totalChapters && (
-            <p className="text-center text-green-400 font-semibold mt-3">✅ Completo! Sei pronto per la verifica!</p>
+            <p className="text-center text-green-400 font-semibold mt-3">Completo! Sei pronto per la verifica!</p>
           )}
         </div>
 
-        {/* Capitolo 1: Fondamentali - Always visible */}
+        {/* Capitolo 1: Fondamentali */}
         <div className="mb-8">
           <h2 className="text-xl font-bold text-white mb-4">Inizia da qui (obbligatorio)</h2>
           <Link href="/learn/base">
             <div className="card bg-blue-600/20 border-2 border-blue-500/50 hover:border-blue-400 cursor-pointer">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">📚</span>
+                  <span className="text-2xl">1</span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">1. Concetti Fondamentali</h3>
@@ -112,18 +110,27 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-4">
             {chapters.slice(1, 5).map((ch, i) => {
               const done = progress.chapters?.[ch.id];
-              const unlocked = i === 0 || progress.chapters?.[chapters[i]?.id];
-              const ChapterLink = ({ children }) => done ? (
-                <Link key={ch.id} href={`/learn/${ch.id}`}>{children}</Link>
-              ) : (
-                <div key={ch.id}>{children}</div>
-              );
+              const idx = i + 1;
               return (
-                <ChapterLink>
-                  <div className={`card ${done ? 'bg-green-600/10 border-green-500/30' : done === false ? 'bg-slate-800/50 border-slate-700/50 opacity-50' : 'bg-slate-800/50 border-slate-700/50 hover:border-indigo-500 cursor-not-allowed'}`}>
+                done ? (
+                  <Link key={ch.id} href={`/learn/${ch.id}`}>
+                    <div className="card bg-green-600/10 border-green-500/30 hover:border-indigo-500">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-green-500/20 text-green-400">
+                          ✓
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white">{ch.title}</h3>
+                          <p className="text-slate-400 text-sm">{ch.desc}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ) : (
+                  <div key={ch.id} className="card bg-slate-800/50 border-slate-700/50 opacity-50">
                     <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${done ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-400'}`}>
-                        {done ? '✓' : i + 2}
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-slate-700 text-slate-400">
+                        {idx + 1}
                       </div>
                       <div>
                         <h3 className="font-semibold text-white">{ch.title}</h3>
@@ -131,7 +138,7 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                </ChapterLink>
+                )
               );
             })}
           </div>
@@ -143,18 +150,27 @@ export default function Home() {
             {chapters.slice(5, 7).map((ch, i) => {
               const done = progress.chapters?.[ch.id];
               const idx = i + 5;
-              const unlocked = idx === 0 || progress.chapters?.[chapters[idx - 1]?.id];
-              const ChapterLink = ({ children }) => done || unlocked ? (
-                <Link key={ch.id} href={`/learn/${ch.id}`}>{children}</Link>
-              ) : (
-                <div key={ch.id}>{children}</div>
-              );
+              const canAccess = i === 0 ? progress.chapters?.[chapters[4]?.id] : true;
               return (
-                <ChapterLink>
-                  <div className={`card ${done ? 'bg-green-600/10 border-green-500/30' : 'bg-slate-800/50 border-slate-700/50 opacity-50'}`}>
+                (done || canAccess) ? (
+                  <Link key={ch.id} href={`/learn/${ch.id}`}>
+                    <div className="card bg-green-600/10 border-green-500/30 hover:border-indigo-500">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-green-500/20 text-green-400">
+                          {done ? '✓' : idx + 1}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white">{ch.title}</h3>
+                          <p className="text-slate-400 text-sm">{ch.desc}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ) : (
+                  <div key={ch.id} className="card bg-slate-800/50 border-slate-700/50 opacity-50">
                     <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${done ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-slate-400'}`}>
-                        {done ? '✓' : idx + 1}
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-slate-700 text-slate-400">
+                        {idx + 1}
                       </div>
                       <div>
                         <h3 className="font-semibold text-white">{ch.title}</h3>
@@ -162,22 +178,10 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                </ChapterLink>
+                )
               );
             })}
           </div>
-        </div>
-
-        {/* Consigli studio */}
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6 mb-8">
-          <h3 className="font-bold text-amber-400 mb-3">📋 Consigli per la verifica</h3>
-          <ul className="text-slate-300 space-y-2 text-sm">
-            <li>• Leggi la <strong className="text-white">spiegazione</strong> di ogni capitolo</li>
-            <li>• Studia il <strong className="text-white">codice</strong> riga per riga</li>
-            <li>• Ripeti i <strong className="text-white">quiz</strong> finché non li fai tutti giusti</li>
-            <li>• Ricorda i <strong className="text-white">valori iniziali</strong> dei semafori (0, 1)</li>
-            <li>• Sappi quando usare <strong className="text-white">WaitOne()</strong> vs <strong className="text-white">Release()</strong></li>
-          </ul>
         </div>
 
         {/* Quiz Liberi */}
@@ -186,20 +190,31 @@ export default function Home() {
             <div className="card bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border-2 border-purple-500/50 hover:border-purple-400 cursor-pointer">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">🧠</span>
+                  <span className="text-2xl">?</span>
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white">Quiz Liberi</h3>
-                  <p className="text-purple-300 text-sm">Tante domande per esercitarti! 30+ domande random</p>
+                  <p className="text-purple-300 text-sm">Tante domande per esercitarti!</p>
                 </div>
               </div>
             </div>
           </Link>
         </div>
+
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-6">
+          <h3 className="font-bold text-amber-400 mb-3">Come funziona questo sito</h3>
+          <ul className="text-slate-300 space-y-2 text-sm">
+            <li>- Clicca su un capitolo per studiare</li>
+            <li>- Leggi la spiegazione e il codice</li>
+            <li>- Vai al capitolo successivo quando sei pronto</li>
+            <li>- Usa i quiz per verificare quello che sai</li>
+            <li>- Il tuo progresso si salva da solo</li>
+          </ul>
+        </div>
       </main>
 
       <footer className="relative z-10 border-t border-slate-800 mt-16 py-6 text-center">
-        <p className="text-slate-500 text-sm">P-C Academy • Studia tutto, prendi 10 🎯</p>
+        <p className="text-slate-500 text-sm">P-C Academy - Studia tutto, prendi 10</p>
       </footer>
     </div>
   );

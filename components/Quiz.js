@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 let quizData = null;
 
@@ -24,6 +24,9 @@ export default function Quiz({ topic, onComplete, showAllTopics = false }) {
   const [optionOrder, setOptionOrder] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [quizDataLocal, setQuizDataLocal] = useState(null);
+  const [userAnswers, setUserAnswers] = useState([]);
+  const [showWrong, setShowWrong] = useState(false);
+  const timeoutRef = useRef(null);
   
   useEffect(() => {
     loadQuizData().then(data => {
@@ -32,6 +35,9 @@ export default function Quiz({ topic, onComplete, showAllTopics = false }) {
         setLoaded(true);
       }
     });
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, []);
   
   useEffect(() => {
@@ -81,6 +87,8 @@ export default function Quiz({ topic, onComplete, showAllTopics = false }) {
     setFinished(false);
     setSelected(null);
     setShowExplanation(false);
+    setUserAnswers([]);
+    setShowWrong(false);
     
     if (shuffled.length > 0) {
       initOptions(shuffled[0]);
@@ -145,11 +153,20 @@ export default function Quiz({ topic, onComplete, showAllTopics = false }) {
     setShowExplanation(true);
     
     const correctIdx = getCorrectIndex();
-    if (idx === correctIdx) {
+    const isCorrect = idx === correctIdx;
+    
+    if (isCorrect) {
       setScore(s => s + 1);
     }
     
-    setTimeout(() => {
+    setUserAnswers(prev => [...prev, {
+      question: questions[currentQ],
+      userAnswer: idx,
+      correctAnswer: correctIdx,
+      isCorrect
+    }]);
+    
+    timeoutRef.current = setTimeout(() => {
       if (currentQ + 1 < questions.length) {
         setCurrentQ(c => c + 1);
         setSelected(null);
@@ -158,10 +175,27 @@ export default function Quiz({ topic, onComplete, showAllTopics = false }) {
       } else {
         setFinished(true);
         if (onComplete) {
-          onComplete(score + (idx === correctIdx ? 1 : 0));
+          onComplete(score + (isCorrect ? 1 : 0));
         }
       }
-    }, 1500);
+    }, 2500);
+  };
+  
+  const goBack = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (currentQ > 0) {
+      const prevAnswer = userAnswers[userAnswers.length - 1];
+      setCurrentQ(c => c - 1);
+      setSelected(null);
+      setShowExplanation(false);
+      initOptions(questions[currentQ - 1]);
+      if (prevAnswer) {
+        if (prevAnswer.isCorrect) {
+          setScore(s => s - 1);
+        }
+        setUserAnswers(prev => prev.slice(0, -1));
+      }
+    }
   };
   
   if (!loaded) {
@@ -181,25 +215,59 @@ export default function Quiz({ topic, onComplete, showAllTopics = false }) {
   }
   
   if (finished) {
+    const wrongAnswers = userAnswers.filter(a => !a.isCorrect);
     const percent = Math.round((score / questions.length) * 100);
     return (
-      <div className="text-center py-12">
-        <div className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center bg-gradient-to-br from-green-500 to-emerald-500">
-          <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-          </svg>
+      <div className="space-y-6">
+        <div className="text-center py-8">
+          <div className={`w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center ${
+            percent >= 70 ? 'bg-gradient-to-br from-green-500 to-emerald-500' : 
+            percent >= 40 ? 'bg-gradient-to-br from-yellow-500 to-orange-500' : 
+            'bg-gradient-to-br from-red-500 to-pink-500'
+          }`}>
+            <span className="text-4xl font-bold text-white">{percent}%</span>
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">Quiz Completato!</h3>
+          <p className="text-lg text-slate-400 mb-2">
+            Punteggio: <span className="font-bold text-green-400">{score}/{questions.length}</span>
+          </p>
+          <p className="text-sm text-slate-500 mb-6">
+            {wrongAnswers.length} {wrongAnswers.length === 1 ? 'errore' : 'errori'}
+          </p>
+          
+          {wrongAnswers.length > 0 && (
+            <button 
+              onClick={() => setShowWrong(!showWrong)}
+              className="px-6 py-3 bg-amber-600 text-white rounded-xl font-semibold hover:bg-amber-500 cursor-pointer mb-4"
+            >
+              {showWrong ? 'Nascondi errori' : 'Vedi dove hai sbagliato'}
+            </button>
+          )}
+          
+          <button 
+            onClick={() => loadQuiz(topic)}
+            className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-500 cursor-pointer block mx-auto"
+          >
+            Ripeti Quiz
+          </button>
         </div>
-        <h3 className="text-2xl font-bold text-white mb-2">Quiz Completato!</h3>
-        <p className="text-lg text-slate-400 mb-2">
-          Punteggio: <span className="font-bold text-green-400">{score}/{questions.length}</span>
-        </p>
-        <p className="text-sm text-slate-500 mb-6">{percent}% corrette</p>
-        <button 
-          onClick={() => loadQuiz(topic)}
-          className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-500 cursor-pointer"
-        >
-          Ripeti Quiz
-        </button>
+        
+        {showWrong && (
+          <div className="space-y-4">
+            <h4 className="text-lg font-bold text-white">Errori:</h4>
+            {wrongAnswers.map((answer, idx) => (
+              <div key={idx} className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                <p className="text-white font-medium mb-2">{answer.question.q}</p>
+                <p className="text-red-400 text-sm">
+                  La tua risposta: {getOptionLabel(answer.userAnswer)}
+                </p>
+                <p className="text-green-400 text-sm">
+                  Risposta corretta: {getOptionLabel(answer.correctAnswer)}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
@@ -209,7 +277,20 @@ export default function Quiz({ topic, onComplete, showAllTopics = false }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between text-sm">
-        <span className="text-slate-400">Domanda {currentQ + 1} di {questions.length}</span>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={goBack}
+            disabled={currentQ === 0}
+            className={`px-3 py-1 rounded-lg text-sm cursor-pointer ${
+              currentQ === 0 
+                ? 'text-slate-600 cursor-not-allowed' 
+                : 'text-slate-400 hover:text-white hover:bg-slate-700'
+            }`}
+          >
+            ← Indietro
+          </button>
+          <span className="text-slate-400">Domanda {currentQ + 1} di {questions.length}</span>
+        </div>
         <div className="flex items-center gap-2">
           <span className="text-slate-500">Punteggio:</span>
           <span className="font-semibold text-white">{score}</span>

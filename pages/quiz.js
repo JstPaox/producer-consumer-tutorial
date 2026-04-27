@@ -4,66 +4,74 @@ import dynamic from 'next/dynamic';
 const Quiz = dynamic(() => import('../components/Quiz'), { ssr: false });
 
 const defaultSections = [
-  { id: 'base', title: 'Concetti Base', count: 10 },
-  { id: 'semaphore', title: 'Semafori', count: 10 },
-  { id: 'queue', title: 'BlockingCollection', count: 10 },
-  { id: 'busywait', title: 'Busy Waiting', count: 10 },
-  { id: 'thread', title: 'Thread in C#', count: 10 },
-  { id: 'pipe', title: 'Named Pipe', count: 10 },
-  { id: 'socket', title: 'Socket TCP', count: 10 },
-  { id: 'memory', title: 'Memoria Condivisa', count: 10 },
-  { id: 'comparison', title: 'Confronto Pattern', count: 10 },
-  { id: 'advanced', title: 'Approfondimenti', count: 10 },
-  { id: 'all', title: 'TUTTO il Programma', count: 100 },
+  { id: 'base', title: 'Concetti Base' },
+  { id: 'semaphore', title: 'Semafori' },
+  { id: 'queue', title: 'BlockingCollection' },
+  { id: 'busywait', title: 'Busy Waiting' },
+  { id: 'thread', title: 'Thread in C#' },
+  { id: 'pipe', title: 'Named Pipe' },
+  { id: 'socket', title: 'Socket TCP' },
+  { id: 'memory', title: 'Memoria Condivisa' },
+  { id: 'comparison', title: 'Confronto Pattern' },
+  { id: 'advanced', title: 'Approfondimenti' },
 ];
 
+const sectionTitles = {
+  base: 'Concetti Fondamentali',
+  semaphore: 'Semafori',
+  queue: 'BlockingCollection',
+  busywait: 'Busy Waiting',
+  thread: 'Thread in C#',
+  pipe: 'Named Pipe',
+  socket: 'Socket TCP',
+  memory: 'Memoria Condivisa',
+  comparison: 'Confronto Pattern',
+  advanced: 'Approfondimenti',
+};
+
 export default function QuizLiberi() {
-  const [selectedSection, setSelectedSection] = useState('all');
+  const [selectedSection, setSelectedSection] = useState(null);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [quizList, setQuizList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState('sections');
 
   useEffect(() => {
-    if (selectedSection === 'all') {
-      setQuizList([]);
-      setSelectedQuiz(null);
-      return;
-    }
-    setLoading(true);
-    fetch('/data/quizdata.json')
-      .then(res => res.json())
-      .then(data => {
-        const section = data.sections.find(s => s.id === selectedSection);
-        if (section) {
-          setQuizList(section.quizzes.map((q, i) => ({ id: q.id, title: q.title, index: i + 1 })));
-        } else {
+    if (selectedSection && step === 'quizzes') {
+      setLoading(true);
+      fetch('/data/quizdata.json')
+        .then(res => res.json())
+        .then(data => {
+          const section = data.sections.find(s => s.id === selectedSection);
+          if (section) {
+            setQuizList(section.quizzes.map((q, i) => ({ id: q.id, title: q.title, index: i + 1 })));
+          } else {
+            setQuizList([]);
+          }
+          setLoading(false);
+        })
+        .catch(() => {
           setQuizList([]);
-        }
-        setSelectedQuiz(null);
-        setLoading(false);
-      })
-      .catch(() => {
-        setQuizList([]);
-        setLoading(false);
-      });
-  }, [selectedSection]);
+          setLoading(false);
+        });
+    }
+  }, [selectedSection, step]);
 
   const handleSectionClick = (sectionId) => {
     setSelectedSection(sectionId);
-    if (sectionId === 'all') {
-      setSelectedQuiz(null);
-      setQuizList([]);
-    }
-  };
-
-  const handleBackToSections = () => {
-    setSelectedSection('all');
+    setStep('quizzes');
     setSelectedQuiz(null);
     setQuizList([]);
   };
 
-  const handleBackToQuizzes = () => {
-    setSelectedQuiz(null);
+  const handleBack = () => {
+    if (selectedQuiz) {
+      setSelectedQuiz(null);
+    } else if (step === 'quizzes') {
+      setStep('sections');
+      setSelectedSection(null);
+      setQuizList([]);
+    }
   };
 
   return (
@@ -73,45 +81,53 @@ export default function QuizLiberi() {
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">Quiz Liberi</h1>
             <p className="text-slate-400">
-              {selectedQuiz 
-                ? selectedQuiz.title 
-                : selectedSection === 'all' 
-                  ? 'Scegli una sezione e poi un quiz!' 
-                  : 'Scegli un quiz!'}
+              {step === 'sections' && 'Scegli una sezione!'}
+              {step === 'quizzes' && !selectedQuiz && 'Scegli un quiz!'}
+              {selectedQuiz && selectedQuiz.title}
             </p>
           </div>
-          <div className="flex gap-3">
-            {selectedQuiz && (
-              <button 
-                onClick={handleBackToQuizzes}
-                className="text-slate-400 hover:text-white transition-colors"
-              >
-                ← Scegli altro quiz
-              </button>
-            )}
-            {selectedSection !== 'all' && !selectedQuiz && (
-              <button 
-                onClick={handleBackToSections}
-                className="text-slate-400 hover:text-white transition-colors"
-              >
-                ← Altre sezioni
-              </button>
-            )}
-            <a href="/" className="text-slate-400 hover:text-white transition-colors">← Home</a>
-          </div>
+          <button 
+            onClick={handleBack}
+            className="text-slate-400 hover:text-white transition-colors"
+          >
+            ← Indietro
+          </button>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto p-6">
-        {!selectedQuiz && selectedSection !== 'all' && quizList.length > 0 && (
+        {loading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full"></div>
+          </div>
+        )}
+
+        {!loading && step === 'sections' && (
+          <div className="mb-8">
+            <div className="grid md:grid-cols-2 gap-3">
+              {defaultSections.map((section, idx) => (
+                <button
+                  key={section.id}
+                  onClick={() => handleSectionClick(section.id)}
+                  className="p-4 rounded-xl text-left transition-all cursor-pointer bg-slate-800/50 border-2 border-slate-700 hover:border-indigo-500 hover:bg-indigo-500/10"
+                >
+                  <div>
+                    <span className="text-xs text-indigo-400 uppercase">Sezione {idx + 1}</span>
+                    <h3 className="font-semibold text-white">{section.title}</h3>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!loading && step === 'quizzes' && !selectedQuiz && (
           <div className="mb-8">
             <div className="grid md:grid-cols-2 gap-3">
               {quizList.map((quiz) => (
                 <button
                   key={quiz.id}
-                  onClick={() => {
-                    setSelectedQuiz({ id: `${selectedSection}.${quiz.id}`, title: quiz.title });
-                  }}
+                  onClick={() => setSelectedQuiz({ id: `${selectedSection}.${quiz.id}`, title: quiz.title })}
                   className="p-4 rounded-xl text-left transition-all cursor-pointer bg-slate-800/50 border-2 border-slate-700 hover:border-indigo-500 hover:bg-indigo-500/10"
                 >
                   <div className="flex items-center justify-between">
@@ -129,43 +145,9 @@ export default function QuizLiberi() {
           </div>
         )}
 
-        {!selectedQuiz && (selectedSection === 'all' || loading) && (
-          <div className="mb-8">
-            <div className="grid md:grid-cols-2 gap-3">
-              {defaultSections.map((section, idx) => (
-                <button
-                  key={section.id}
-                  onClick={() => handleSectionClick(section.id)}
-                  className={`p-4 rounded-xl text-left transition-all cursor-pointer ${
-                    selectedSection === section.id 
-                      ? 'bg-indigo-600 border-2 border-indigo-400' 
-                      : 'bg-slate-800/50 border-2 border-slate-700 hover:border-slate-600'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-xs text-indigo-400 uppercase">Sezione {idx + 1}</span>
-                      <h3 className="font-semibold text-white">{section.title}</h3>
-                    </div>
-                    <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
-                      <span className="text-indigo-400 font-bold">{section.count}</span>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         {selectedQuiz && (
           <div className="card bg-slate-800/50 border border-slate-700/50">
             <Quiz topic={selectedQuiz.id} showAllTopics={false} />
-          </div>
-        )}
-
-        {selectedSection === 'all' && !selectedQuiz && (
-          <div className="card bg-slate-800/50 border border-slate-700/50">
-            <Quiz topic="all" showAllTopics={true} />
           </div>
         )}
 
@@ -176,7 +158,6 @@ export default function QuizLiberi() {
             <li>• <strong className="text-white">1000 domande</strong> totali</li>
             <li>• Ogni quiz ha domande in ordine casuale</li>
             <li>• Ripeti per imparare!</li>
-            <li>• Vero/Falso e scelta multipla</li>
           </ul>
         </div>
       </main>
