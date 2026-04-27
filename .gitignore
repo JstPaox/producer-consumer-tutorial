@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+data/docdata.json
+.env
+.DS_Store
+*.log
+producer-consumer-site/
+
+.vercel
+
+.vercel
