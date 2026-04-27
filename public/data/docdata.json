@@ -1,0 +1,146 @@
+{
+  "posts": [
+    {
+      "author": "alberto veneziani",
+      "date": "20 gen",
+      "title": "Produttore-Consumatore base"
+    }
+  ],
+  "codeBlocks": [
+    {
+      "id": 1,
+      "code": "using System;\n\nusing System.Threading;\n\n\n\nnamespace produttore_consumatore_thr\n\n{\n\n    class Program\n\n    {\n\n        // variabile globale comune ai threads\n\n        static int n;\n\n        // semafori di sincronizzazione.\n\n        static Semaphore semc;\n\n        static Semaphore semp;\n\n\n\n        // thread del consumatore\n\n        static void cons()\n\n        {\n\n            while (true)\n\n            {\n\n                semc.WaitOne();   // eventuale stop del consumatore se il produttore non ha ancora prodotto\n\n                Console.WriteLine(\"Consumato: \" + n);  // segnala che un dato è stato letto dalla variabile globale (consumato)\n\n                Thread.Sleep(500);  // regolatore di velocità del thread\n\n                semp.Release();        // da via libera al produttore\n\n            }\n\n        }\n\n\n\n        // thread del produttore\n\n        static void prod()\n\n        {\n\n            while (true)\n\n            {\n\n                semp.WaitOne();   // eventuale stop del produttore se il consumatore non ha ancora consumato\n\n                n++;     // produce nuovo dato\n\n                Console.WriteLine(\"Prodotto: \" + n);     // segnala che un dato è stato scritto nella variabile comune\n\n                Thread.Sleep(200);     // regolatore di velocità del thread\n\n                semc.Release();\n\n            }\n\n        }\n\n\n\n        static void Main(string[] args)\n\n        {\n\n            Thread thc, thp;\n\n\n\n            n = 0;\n\n\n\n            // semafori di sincronizzazione.\n\n            // Il produttore è pronto inizialmente per produrre e quindi il suo semaforo\n\n            // a valore alto, e di conseguenza risulta invece interdetto il semaforo  che\n\n            // controlla il consumatore\n\n            semc = new Semaphore(0, 1);\n\n            semp = new Semaphore(1, 1);\n\n\n\n            // creazione e lancio dei threads produttore e consumatore\n\n            thc = new Thread(cons);\n\n            thp = new Thread(prod);\n\n            thc.Start();\n\n            thp.Start();\n\n        }\n\n    }\n\n}\n",
+      "summary": "using System;",
+      "tags": [
+        "semafori",
+        "thread",
+        "sincronizzazione",
+        "produttore-consumatore"
+      ]
+    },
+    {
+      "id": 2,
+      "code": "using System;\n\nusing System.Threading;\n\nusing System.Collections.Concurrent;\n\n\n\nclass Program\n\n{\n\n  static BlockingCollection<int> coda = new BlockingCollection<int>(10);    \n\n   \n\n  static void cons()\n\n  {\n\n      int n;\n\n     \n\n      while (true)\n\n      {\n\n          n = coda.Take();\n\n          Console.WriteLine(\"Lunghezza coda: \" + coda.Count);\n\n          Console.WriteLine(\"Consumato: \" + n);\n\n          Thread.Sleep(500);\n\n      }\n\n  }\n\n \n\n  static void prod()\n\n  {\n\n      int n = 0;\n\n     \n\n      while (true)\n\n      {\n\n         n++;\n\n         coda.Add(n);\n\n         Console.WriteLine(\"Prodotto: \" + n);        \n\n         Thread.Sleep(300);          \n\n      }\n\n  }\n\n   \n\n  static void Main()\n\n  {\n\n      Thread th_cons, th_prod;\n\n     \n\n      th_cons = new Thread(cons);\n\n      th_prod = new Thread(prod);    \n\n     \n\n      th_cons.Start();\n\n      th_prod.Start();\n\n  }\n\n}\n",
+      "summary": "using System;",
+      "tags": [
+        "queue",
+        "thread"
+      ]
+    },
+    {
+      "id": 3,
+      "code": "using System;\n\nusing System.Threading;\n\n\n\nnamespace produttore_consumatore_thr\n\n{\n\n    class Program\n\n    {\n\n        // variabili globale comune ai threads\n\n        static int n, cont;\n\n\n\n        // thread del consumatore\n\n        static void cons()\n\n        {\n\n            while (true)\n\n            {\n\n                while (n == 0) ;    // stoppa il thread finchè il dato non è stato prodotto\n\n                Console.WriteLine(\"Consumato: \" + n);  // segnala che un dato è stato letto dalla variabile globale (consumato)\n\n                n = 0;\n\n                Thread.Sleep(500);  // regolatore di velocità del thread              \n\n            }\n\n        }\n\n\n\n        // thread del produttore\n\n        static void prod()\n\n        {\n\n            while (true)\n\n            {\n\n                while (n != 0) ;   // stoppa il thread finchè il dato non è stato consumato\n\n                cont++;     // produce nuovo dato\n\n                n = cont;\n\n                Console.WriteLine(\"Prodotto: \" + n);     // segnala che un dato è stato scritto nella variabile comune\n\n                Thread.Sleep(200);     // regolatore di velocità del thread                \n\n            }\n\n        }\n\n\n\n        static void Main(string[] args)\n\n        {\n\n            Thread thc, thp;\n\n\n\n            n = 0;\n\n            cont = 0;\n\n\n\n            // creazione e lancio dei threads produttore e consumatore\n\n            thc = new Thread(cons);\n\n            thp = new Thread(prod);\n\n            thc.Start();\n\n            thp.Start();\n\n        }\n\n    }\n\n}\n",
+      "summary": "using System;",
+      "tags": [
+        "thread",
+        "produttore-consumatore"
+      ]
+    },
+    {
+      "id": 4,
+      "code": "using System;\n\nusing System.Threading;     // comando di attesa (sleep)\n\nusing System.IO;        // utilizzo della classe StreamReader\n\nusing System.IO.Pipes;      // utilizzo della named pipe\n\n\n\nnamespace prod_proc_pipe\n",
+      "summary": "using System;",
+      "tags": [
+        "thread"
+      ]
+    },
+    {
+      "id": 5,
+      "code": "using System;\n\nusing System.Threading;    // comando di attesa  (sleep)\n\nusing System.IO;        // utilizzo della classe StreamReader\n\nusing System.IO.Pipes;    // utilizzo della named pipe\n\n\n\nnamespace cons_proc_pipe\n",
+      "summary": "using System;",
+      "tags": [
+        "thread"
+      ]
+    },
+    {
+      "id": 6,
+      "code": "using System;\n\nusing System.Threading;\n\nusing SharedMemory;     // include apposita libreria (.DLL) che permette la condivisione della memoria IPC\n\n\n\n\n\nnamespace prod_shmem\n",
+      "summary": "using System;",
+      "tags": [
+        "shared-memory",
+        "thread"
+      ]
+    },
+    {
+      "id": 7,
+      "code": "using System;\n\nusing System.Threading;\n\nusing SharedMemory;      // include apposita libreria (.DLL) che permette la condivisione della memoria IPC\n\n\n\n\n\nnamespace cons_shmem\n",
+      "summary": "using System;",
+      "tags": [
+        "shared-memory",
+        "thread"
+      ]
+    },
+    {
+      "id": 8,
+      "code": "using System;\n\nusing System.Net;\n\nusing System.Net.Sockets;\n\nusing System.Text;\n\n\n\n",
+      "summary": "using System;",
+      "tags": [
+        "socket"
+      ]
+    },
+    {
+      "id": 9,
+      "code": "namespace prod_socket\n\n{\n\n    class Program\n\n    {\n\n        static void Main(string[] args)\n\n        {\n\n            Socket sk;  // socket di ascolto\n\n            Socket sk_conn;   // socket di connessione\n\n            IPEndPoint ep;\n\n            int n;\n\n            byte[] dati;\n\n\n\n\n\n            // definisce le tipologie di rete e protocollo su cui la socket deve operare\n\n\n\n\n\n            sk = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);\n\n\n\n\n\n            // definisce l'host (indirizzo) e la porta sulla quale connettersi\n\n\n\n\n\n            ep = new IPEndPoint(IPAddress.Loopback,5000);\n\n\n\n            sk.Bind(ep);     // associa i parametri di connessione alla socket sk\n\n\n\n            sk.Listen(2);   // comanda alla socket di mettersi in ascolto di connessioni \n\n                                     // (max client in attesa 2)\n\n\n\n            Console.WriteLine(\"In attesa di connessione....\");\n\n            sk_conn = sk.Accept();     // bloccante in attesa di una richiesta di connessione\n\n\n\n            n = 0;\n\n            while (true)\n\n            {\n\n                n++;\n\n                dati = BitConverter.GetBytes(n);\n\n                sk_conn.Send(dati);\n\n                Console.WriteLine(\"Prodotto: \" + n);\n\n            }\n\n\n\n        }\n\n    }\n\n}\n",
+      "summary": "namespace prod_socket",
+      "tags": [
+        "socket"
+      ]
+    },
+    {
+      "id": 10,
+      "code": "using System;\n\nusing System.Net;\n\nusing System.Net.Sockets;\n\nusing System.Text;\n\nusing System.Threading;\n\n",
+      "summary": "using System;",
+      "tags": [
+        "socket",
+        "thread"
+      ]
+    },
+    {
+      "id": 11,
+      "code": "namespace cons_socket\n\n{\n\n    class Program\n\n    {\n\n        static void Main(string[] args)\n\n        {\n\n            Socket sk;\n\n            IPEndPoint ep;\n\n            byte[] dati = new byte[4];            \n\n            int n;\n\n\n\n            // definisce le tipologie di rete e protocollo su cui la socket deve operare\n\n            sk = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);\n\n\n\n            // definisce l'host (indirizzo) e la porta sulla quale connettersi\n\n            ep = new IPEndPoint(IPAddress.Loopback, 5000);\n\n\n\n            try\n\n            {\n\n                sk.Connect(ep);   // effettua connessione al server (socket di tipo server)\n\n            }\n\n            catch (SocketException se)\n\n            {\n\n                Console.WriteLine(\"Connessione non riuscita.\");\n\n                Console.ReadKey();\n\n                return;\n\n            }\n\n\n\n            while (true)\n\n            {\n\n                sk.Receive(dati);   // riceve una serie di byte                \n\n                n = BitConverter.ToInt32(dati,0);   // riconverte i byte nella stringa originaria\n\n                Console.WriteLine(\"Consumato: \" + n);\n\n                //Thread.Sleep(50);\n\n            }\n\n        }\n\n    }\n\n}\n",
+      "summary": "namespace cons_socket",
+      "tags": [
+        "socket",
+        "thread"
+      ]
+    },
+    {
+      "id": 12,
+      "code": "using System;\n\nusing System.Net;\n\nusing System.Net.Sockets;\n\nusing System.Text;\n\nusing System.Threading;\n\n",
+      "summary": "using System;",
+      "tags": [
+        "socket",
+        "thread"
+      ]
+    },
+    {
+      "id": 13,
+      "code": "namespace cons_socket\n\n{\n\n    class Program\n\n    {\n\n        static void Main(string[] args)\n\n        {\n\n            Socket sk;\n\n            IPEndPoint ep;\n\n            byte[] dati = new byte[4];            \n\n            int n;\n\n            bool esci = false;\n\n\n\n            // definisce le tipologie di rete e protocollo su cui la socket deve operare\n\n            sk = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);\n\n\n\n            // definisce l'host (indirizzo) e la porta sulla quale connettersi\n\n            ep = new IPEndPoint(IPAddress.Loopback, 5000);\n\n\n\n            try\n\n            {\n\n                sk.Connect(ep);   // effettua connessione al server (socket di tipo server)\n\n            }\n\n            catch (SocketException)\n\n            {\n\n                Console.WriteLine(\"Connessione non riuscita.\");\n\n                Console.ReadKey();\n\n                return;\n\n            }\n\n\n\n            while (! esci)\n\n            {\n\n                try\n\n                {\n\n                    sk.Receive(dati);   // riceve una serie di byte                \n\n                    n = BitConverter.ToInt32(dati, 0);   // riconverte i byte nella stringa originaria\n\n                    Console.WriteLine(\"Consumato: \" + n);\n\n                }\n\n                catch (SocketException)\n\n                {\n\n                    Console.WriteLine(\"Il produttore ha chiuso la sua connessione.\");\n\n                    sk.Close();\n\n                    esci = true;\n\n                }\n\n            }\n\n\n\n            Console.ReadKey();\n\n        }\n\n    }\n\n}\n",
+      "summary": "namespace cons_socket",
+      "tags": [
+        "socket",
+        "produttore-consumatore"
+      ]
+    },
+    {
+      "id": 14,
+      "code": "using System;\n\nusing System.Net;\n\nusing System.Net.Sockets;\n\nusing System.Text;\n\nusing System.Threading;\n\n",
+      "summary": "using System;",
+      "tags": [
+        "socket",
+        "thread"
+      ]
+    },
+    {
+      "id": 15,
+      "code": "namespace prod_socket\n\n{\n\n    class Program\n\n    {\n\n        static int n = 0;\n\n\n\n        // routine-thread che viene attivata in parallelo, per ogni consumatore\n\n        // che si collega al produttore (server)\n\n        static void invio_dati(Object obj)\n\n        {\n\n            bool esci = false;\n\n            byte[] dati;\n\n            Socket sk = (Socket) obj;\n\n\n\n            while (! esci)\n\n            {\n\n                n++;\n\n                dati = BitConverter.GetBytes(n);\n\n                try {     // se si verifica errore il consumatore si è sganciato....\n\n                    sk.Send(dati);\n\n                    Console.WriteLine(\"Prodotto: \" + n);\n\n                }\n\n                catch (SocketException)\n\n                {   // allora il produttore chiude la socket ed esce dal ciclo di trasmissione\n\n                    Console.WriteLine(\"Un consumatore si è sganciato.\");\n\n                    sk.Close();\n\n                    esci = true;\n\n                }\n\n            }\n\n        }\n\n\n\n        static void Main(string[] args)\n\n        {\n\n            Socket sk;  // socket di ascolto\n\n            Socket sk_con;   // socket di connessione\n\n            IPEndPoint ep;\n\n            Thread thn;\n\n            int n, nconn;\n\n\n\n            // definisce le tipologie di rete e protocollo su cui la socket deve operare\n\n            sk = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);\n\n\n\n\n\n            // definisce l'host (indirizzo) e la porta sulla quale connettersi\n\n            ep = new IPEndPoint(IPAddress.Loopback, 5000);\n\n\n\n            sk.Bind(ep);     // associa i parametri di connessione alla socket sk\n\n\n\n            sk.Listen(2);   // comanda alla socket di mettersi in ascolto di connessioni\n\n            // (max client in attesa 2)\n\n\n\n            nconn = 0;\n\n            while (true)\n\n            {\n\n                Console.WriteLine(\"In attesa di connessione....\");\n\n                //sk_conn[nconn] = sk.Accept();     // bloccante in attesa di una richiesta di connessione\n\n                sk_con = sk.Accept();\n\n\n\n                thn = new Thread(invio_dati);\n\n                thn.Start(sk_con);\n\n\n\n                nconn++;\n\n            }\n\n\n\n        }\n\n    }\n\n}\n",
+      "summary": "namespace prod_socket",
+      "tags": [
+        "socket",
+        "thread",
+        "produttore-consumatore"
+      ]
+    }
+  ],
+  "generated": "2026-04-27T17:22:49.877Z"
+}

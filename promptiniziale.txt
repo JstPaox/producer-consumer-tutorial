@@ -1,0 +1,142 @@
+Obiettivo generale
+------------------
+Agisci come se fossi anthropic.claude-opus-4-7. Sei un assistente di sviluppo: nella cartella corrente c'è un file .docx che contiene TUTTI i listati C# e la documentazione sui modelli produttore/consumatore. Genera un sito web didattico completo, reattivo e pronto per il deploy su Vercel che insegni **tutti i modelli produttore/consumatore in C#** presenti nel .docx. Il sito deve guidare uno studente principiante (livello: principiante) con un percorso lineare ma skippabile, quiz a scelta multipla obbligatori solo nel percorso guidato, simulatore visivo per i concetti chiave (semafori, buffer, sincronizzazione), archivio dei listati estratti dal .docx e salvataggio del progresso (cross‑sessione) via localStorage. Il sito deve essere in **italiano**.
+
+Vincoli principali
+------------------
+1. **Solo C#**: tutti i codici ed esempi devono essere quelli estratti dal `.docx`. Non aggiungere esempi in altri linguaggi.
+2. **Parsing automatico**: crea una funzione serverless che legge e converte il `.docx` in JSON strutturato (listati, metadati, date, titoli). Usa librerie Node compatibili con Vercel (es. `mammoth` o `docx`).
+3. **Deploy su Vercel**: genera `vercel.json`, script `package.json`, e uno script che tenta il deploy automatico usando Vercel CLI. Se le credenziali (VERCEL_TOKEN, GITHUB_TOKEN) sono disponibili nell’ambiente, esegui automaticamente il push su GitHub e il deploy su Vercel. Se non sono disponibili, crea un unico file `DEPLOY_INSTRUCTIONS.md` con un singolo comando da eseguire per completare il deploy.
+4. **Interfaccia reattiva**: usa Next.js (React) con Tailwind CSS per UI reattiva; struttura ottimale per Vercel. Usa Prism.js o Highlight.js per evidenziazione codice. Usa componenti SVG professionali per icone (no emoji).
+5. **Architettura**:
+   - Frontend: Next.js (React) + Tailwind.
+   - API serverless: Node.js (per parsing .docx, gestione quiz, salvataggio remoto opzionale).
+   - Persistenza utente: **localStorage** per progresso e stato (no autenticazione).
+   - CI/CD: `vercel.json` + GitHub Actions opzionale; comunque predisponi deploy automatico via Vercel CLI se token presenti.
+6. **Simulatore visivo**: implementa un simulatore JS che visualizza buffer (array circolare), semafori (valori), produttore e consumatore in tempo reale; permette di impostare velocità relative e vedere cosa succede (sovrascritture, attese). Non è necessario eseguire codice C# nel browser; il simulatore è una visualizzazione didattica in JS che riproduce il comportamento logico.
+7. **Quiz**: per ogni argomento estratto dal .docx crea un set di domande a scelta multipla (minimo 5 per argomento). Nel percorso guidato i quiz sono obbligatori per passare avanti; nel percorso libero sono opzionali.
+8. **Esercizi**: mostra il codice originale e una versione commentata/semplificata; fornisci esercizi “trova il bug” e “spiega cosa succede” (ma non richiedere esecuzione).
+9. **Archivio .docx**: crea una pagina footer “Sorgente .docx” che mostra il file formattato, sezionato per data e post (come nel .docx), con i listati originali e i metadati.
+10. **Progress tracking**: timeline con checkpoint, badge, percentuale completamento; salvataggio in localStorage; possibilità di riprendere la sessione sullo stesso browser.
+11. **Accessibilità e UX**: sidebar con capitoli, navbar, layout leggibile; tema chiaro/dark opzionale.
+12. **Output finale**: crea una repo git locale con struttura completa, commit iniziale, e (se possibile) push su GitHub e deploy su Vercel. Se non possibile, fornisci comandi esatti da eseguire per completare push e deploy.
+
+Dettagli tecnici e struttura dei file
+------------------------------------
+- Root:
+  - `package.json` (script: dev, build, start, vercel-deploy)
+  - `vercel.json`
+  - `README.md`
+  - `DEPLOY_INSTRUCTIONS.md` (se deploy automatico non possibile)
+  - `/src` (Next.js app)
+  - `/src/pages` (index, percorso guidato, percorso libero, archivio, quiz, simulatore, about)
+  - `/src/components` (Sidebar, Header, CodeViewer, Quiz, Simulator, Timeline, Footer)
+  - `/src/lib` (docx-parser, data-loader, quiz-generator)
+  - `/public` (SVG icons, assets)
+  - `/data` (output JSON estratto dal .docx: `docdata.json`)
+  - `.github/workflows` (opzionale: build/test)
+- API routes (Next.js API):
+  - `/api/parse-docx` → legge `file.docx` nella root, converte in JSON strutturato (post, date, listati, titoli, linguaggio), salva in `/data/docdata.json`.
+  - `/api/quiz` → endpoint che restituisce quiz per argomento (generati automaticamente dal contenuto).
+  - `/api/deploy` → script che, se token presenti, esegue Vercel CLI deploy (opzionale, best-effort).
+
+Parsing .docx e mapping dei contenuti
+------------------------------------
+- Estrai dal `.docx`:
+  - tutti i **post** (data, titolo, autore),
+  - tutti i **listati C#** (identificati come blocchi di codice),
+  - eventuali spiegazioni testuali.
+- Per ogni listato C# crea un oggetto:
+  - `id`, `postDate`, `postTitle`, `filename` (generato), `code`, `summary` (estratto automatico), `tags` (es. semafori, shared memory, pipe, socket, queue, busy-wait).
+- Usa `mammoth` o `docx` per estrazione; se necessario, applica regex per isolare blocchi di codice (es. blocchi indentati o tra delimitatori).
+- Salva il JSON in `/data/docdata.json` e usalo come sorgente per tutte le pagine.
+
+Contenuti didattici e workflow
+-----------------------------
+- **Home**: introduzione concisa, percorso consigliato “Inizia qui”.
+- **Percorso guidato**: step sequenziali:
+  1. Concetti base (prod/cons, buffer, sincronizzazione)
+  2. Semafori con thread (C#) — listato + spiegazione + simulatore
+  3. BlockingCollection / queue (C#) — listato + spiegazione + simulatore
+  4. Busy waiting (C#) — listato + spiegazione + simulatore
+  5. IPC: named pipe, shared memory + semafori IPC (C#) — listato + spiegazione + simulatore
+  6. Socket TCP (C#) — listato + spiegazione + simulatore
+  7. Riepilogo e confronto (tabella pro/contro)
+  - Alla fine di ogni step: quiz obbligatorio (per percorso guidato).
+- **Percorso libero**: lista di argomenti con accesso diretto; quiz opzionali.
+- **Archivio**: pagina che mostra il `.docx` sezionato per data/post con i listati originali (linkabili).
+- **Simulator**: pagina interattiva che permette di:
+  - scegliere modello (semaforo, queue, pipe, shared memory),
+  - impostare velocità produttore/consumatore,
+  - vedere buffer e semafori cambiare in tempo reale,
+  - riprodurre scenari (produttore veloce, consumatore lento, buffer pieno, perdita dati).
+- **Quiz**: per ogni argomento genera almeno 5 domande a scelta multipla; salva risultati in localStorage; mostra spiegazioni per ogni risposta.
+
+Requisiti UX e design
+---------------------
+- Layout con **sidebar** per navigazione capitoli.
+- Codice mostrato con evidenziazione (Prism.js).
+- Mostra **codice originale** e **versione commentata** (affiancate).
+- Icone SVG professionali; nessuna emoji.
+- Timeline con checkpoint e badge; salvataggio in localStorage.
+- Lingua: **italiano**.
+
+Simulatore tecnico (implementazione)
+-----------------------------------
+- Implementa un motore JS che simula:
+  - buffer come array circolare,
+  - semafori come contatori (semp.acquire(), semp.release()),
+  - operazioni write/read con offset (mostra offset 0 come default),
+  - visualizzazione step-by-step e modalità “play/pause/step”.
+- Il simulatore non esegue C#; replica la logica dei listati C# in JS per scopi didattici.
+
+Quiz generation
+---------------
+- Genera domande automaticamente dal testo e dai commenti dei listati:
+  - Domande concettuali (es. “Cosa succede se il produttore è più veloce?”)
+  - Domande sul codice (es. “Qual è il valore iniziale del semaforo produttore in questo listato?”)
+- Fornisci per ogni domanda 4 opzioni, una sola corretta.
+- Salva punteggi per argomento in localStorage.
+
+Deploy automatico (best-effort)
+-------------------------------
+- Se `VERCEL_TOKEN` e `GITHUB_TOKEN` sono presenti nell’ambiente:
+  1. Inizializza repo git, crea commit.
+  2. Crea repo GitHub (usando GitHub API/CLI).
+  3. Push del codice.
+  4. Crea progetto Vercel collegato al repo e avvia deploy (usando Vercel CLI/API).
+  5. Restituisci URL pubblico del sito.
+- Se i token non sono presenti:
+  - Genera `DEPLOY_INSTRUCTIONS.md` con 3 comandi esatti da eseguire (impostare token, `git push`, `vercel --prod`) e un singolo comando `./deploy.sh` che l’utente potrà eseguire per completare tutto.
+- Fornisci anche `vercel.json` e file di configurazione necessari.
+
+Sicurezza e limiti
+------------------
+- Non eseguire i listati C# sul server o nel browser.
+- Non richiedere password o dati sensibili all’utente.
+- Se non puoi completare il deploy automatico per mancanza di token, esegui tutto il resto e fornisci istruzioni chiare e un unico comando per completare il deploy.
+
+Output richiesto da te (utente)
+-------------------------------
+Alla fine dell’esecuzione del prompt, fornisci:
+1. Un repository git locale completo con commit iniziale.
+2. File `DEPLOY_INSTRUCTIONS.md` (se deploy non automatico).
+3. Se deploy automatico riuscito: URL pubblico del sito su Vercel.
+4. Un breve report (in italiano) che elenca:
+   - quali file sono stati creati,
+   - dove si trova il JSON estratto dal `.docx`,
+   - come sono mappati gli argomenti,
+   - come eseguire localmente (`npm install`, `npm run dev`),
+   - come ripristinare il deploy manuale (se necessario).
+
+Nota finale per l’esecuzione
+---------------------------
+- Usa il `.docx` presente nella cartella come **unica fonte primaria** per tutti i listati C# e i riferimenti. Non aggiungere nuovi esempi C# esterni al file.
+- Assicurati che ogni listato C# estratto sia presente nella sezione corrispondente del sito (codice originale + versione commentata).
+- Genera quiz e simulatore come descritto.
+- Se trovi ambiguità nel `.docx` durante il parsing, applica regole conservative: mantieni il codice originale intatto e crea una versione commentata con spiegazioni esplicite delle assunzioni fatte.
+
+FINE DEL PROMPT
+
+
+

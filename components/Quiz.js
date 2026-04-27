@@ -1,105 +1,283 @@
 import { useState, useEffect } from 'react';
 
-export default function Quiz({ topic, onComplete }) {
+let quizData = null;
+
+async function loadQuizData() {
+  if (quizData) return quizData;
+  try {
+    const res = await fetch('/data/quizdata.json');
+    quizData = await res.json();
+    return quizData;
+  } catch (e) {
+    console.error('Failed to load quiz data:', e);
+    return null;
+  }
+}
+
+export default function Quiz({ topic, onComplete, showAllTopics = false }) {
   const [questions, setQuestions] = useState([]);
   const [currentQ, setCurrentQ] = useState(0);
   const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
+  const [showExplanation, setShowExplanation] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [optionOrder, setOptionOrder] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+  const [quizDataLocal, setQuizDataLocal] = useState(null);
   
   useEffect(() => {
-    const q = generateQuiz(topic);
-    setQuestions(q);
-  }, [topic]);
+    loadQuizData().then(data => {
+      if (data) {
+        setQuizDataLocal(data);
+        setLoaded(true);
+      }
+    });
+  }, []);
   
-  if (!questions.length) return <div>Caricamento quiz...</div>;
+  useEffect(() => {
+    if (loaded && topic) {
+      loadQuiz(topic);
+    }
+  }, [topic, loaded]);
   
-  const q = questions[currentQ];
+  function getSections() {
+    if (!quizDataLocal) return {};
+    const sections = {};
+    quizDataLocal.sections.forEach(section => {
+      sections[section.id] = section;
+    });
+    return sections;
+  }
+  
+  function loadQuiz(topicName) {
+    const sections = getSections();
+    let questionsList = [];
+    
+    if (showAllTopics) {
+      questionsList = getAllQuestions();
+    } else if (sections[topicName]) {
+      const section = sections[topicName];
+      const allQ = [];
+      section.quizzes.forEach(qz => {
+        allQ.push(...qz.questions);
+      });
+      questionsList = allQ;
+    }
+    
+    const normalized = questionsList.map(q => normalizeQuestion(q));
+    const shuffled = shuffleArray([...normalized]);
+    setQuestions(shuffled);
+    setCurrentQ(0);
+    setScore(0);
+    setFinished(false);
+    setSelected(null);
+    setShowExplanation(false);
+    
+    if (shuffled.length > 0) {
+      initOptions(shuffled[0]);
+    }
+  }
+  
+  function normalizeQuestion(q) {
+    if (q.t === 'bool') {
+      return { q: q.q, options: ['Vero', 'Falso'], correct: q.c, type: 'bool' };
+    }
+    return { q: q.q, options: q.o, correct: q.c };
+  }
+  
+  function getAllQuestions() {
+    if (!quizDataLocal) return [];
+    const all = [];
+    quizDataLocal.sections.forEach(section => {
+      section.quizzes.forEach(quiz => {
+        quiz.questions.forEach(q => {
+          all.push(normalizeQuestion(q));
+        });
+      });
+    });
+    return all;
+  }
+  
+  function initOptions(q) {
+    if (q.type === 'bool' || !q.options) {
+      setOptionOrder([0, 1]);
+    } else {
+      const indices = q.options.map((_, i) => i);
+      setOptionOrder(shuffleArray(indices));
+    }
+  }
+  
+  function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  }
+  
+  function getCorrectIndex() {
+    const q = questions[currentQ];
+    if (q.type === 'bool') return q.correct;
+    return q.correct;
+  }
+  
+  function getOptionLabel(idx) {
+    const q = questions[currentQ];
+    if (q.type === 'bool' || !q.options) {
+      return idx === 0 ? 'Vero' : 'Falso';
+    }
+    return q.options[idx] || `Opzione ${idx}`;
+  }
   
   const handleAnswer = (idx) => {
     if (selected !== null) return;
     setSelected(idx);
-    if (idx === q.correct) {
+    setShowExplanation(true);
+    
+    const correctIdx = getCorrectIndex();
+    if (idx === correctIdx) {
       setScore(s => s + 1);
     }
+    
     setTimeout(() => {
       if (currentQ + 1 < questions.length) {
         setCurrentQ(c => c + 1);
         setSelected(null);
+        setShowExplanation(false);
+        initOptions(questions[currentQ + 1]);
       } else {
         setFinished(true);
-        const progress = JSON.parse(localStorage.getItem('progress') || '[]');
-        if (!progress.includes(topic)) {
-          progress.push(topic);
-          localStorage.setItem('progress', JSON.stringify(progress));
+        if (onComplete) {
+          onComplete(score + (idx === correctIdx ? 1 : 0));
         }
-        if (onComplete) onComplete(score + (idx === q.correct ? 1 : 0));
       }
     }, 1500);
   };
   
-  if (finished) {
+  if (!loaded) {
     return (
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
-        <h3 className="text-2xl font-bold text-[#1E1B4B] dark:text-white mb-4">Quiz Completato!</h3>
-        <p className="text-lg">Punteggio: <span className="font-bold text-[#4F46E5]">{score}/{questions.length}</span></p>
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full"></div>
       </div>
     );
   }
   
+  if (!questions.length) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+  
+  if (finished) {
+    const percent = Math.round((score / questions.length) * 100);
+    return (
+      <div className="text-center py-12">
+        <div className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center bg-gradient-to-br from-green-500 to-emerald-500">
+          <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+          </svg>
+        </div>
+        <h3 className="text-2xl font-bold text-white mb-2">Quiz Completato!</h3>
+        <p className="text-lg text-slate-400 mb-2">
+          Punteggio: <span className="font-bold text-green-400">{score}/{questions.length}</span>
+        </p>
+        <p className="text-sm text-slate-500 mb-6">{percent}% corrette</p>
+        <button 
+          onClick={() => loadQuiz(topic)}
+          className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-500 cursor-pointer"
+        >
+          Ripeti Quiz
+        </button>
+      </div>
+    );
+  }
+  
+  const q = questions[currentQ];
+  
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-      <div className="flex justify-between text-sm text-gray-500 mb-4">
-        <span>Domanda {currentQ + 1}/{questions.length}</span>
-        <span>Punteggio: {score}</span>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-slate-400">Domanda {currentQ + 1} di {questions.length}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-slate-500">Punteggio:</span>
+          <span className="font-semibold text-white">{score}</span>
+        </div>
       </div>
-      <h3 className="text-lg font-semibold text-[#1E1B4B] dark:text-white mb-4">{q.question}</h3>
-      <div className="space-y-2">
-        {q.options.map((opt, idx) => (
-          <button
-            key={idx}
-            onClick={() => handleAnswer(idx)}
-            className={`cursor-pointer w-full text-left p-3 rounded-lg border-2 transition-colors duration-200 ${
-              selected === null ? 'border-gray-300 hover:border-[#4F46E5] dark:border-gray-600' :
-              idx === q.correct ? 'border-green-500 bg-green-50 dark:bg-green-900' :
-              idx === selected ? 'border-red-500 bg-red-50 dark:bg-red-900' : 'border-gray-300 opacity-50'
-            }`}
-          >
-            {opt}
-          </button>
-        ))}
+      
+      <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+        <div 
+          className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-300"
+          style={{ width: `${((currentQ + 1) / questions.length) * 100}%` }}
+        />
       </div>
-      {selected !== null && (
-        <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">{q.explanation}</p>
-      )}
+      
+      <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50">
+        <h3 className="text-xl font-semibold text-white mb-6">{q.q}</h3>
+        
+        <div className="space-y-3">
+          {optionOrder.map((idx) => {
+            const isCorrect = getCorrectIndex() === idx;
+            return (
+              <button
+                key={idx}
+                onClick={() => handleAnswer(idx)}
+                disabled={selected !== null}
+                className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
+                  selected === null 
+                    ? 'border-slate-600 hover:border-indigo-500 hover:bg-indigo-500/10' 
+                    : isCorrect
+                      ? 'border-green-500 bg-green-500/20'
+                      : selected === idx
+                        ? 'border-red-500 bg-red-500/20'
+                        : 'border-slate-600 opacity-50'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-semibold ${
+                    selected === null 
+                      ? 'bg-slate-700 text-slate-300'
+                      : isCorrect
+                        ? 'bg-green-500 text-white'
+                        : selected === idx
+                          ? 'bg-red-500 text-white'
+                          : 'bg-slate-700 text-slate-300'
+                  }`}>
+                    {String.fromCharCode(65 + idx)}
+                  </div>
+                  <span className="text-slate-200">{getOptionLabel(idx)}</span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+        
+        {showExplanation && (
+          <div className={`mt-6 p-4 rounded-xl ${
+            selected === getCorrectIndex() ? 'bg-green-500/10 border border-green-500/30' : 'bg-red-500/10 border border-red-500/30'
+          }`}>
+            <div className="flex items-center gap-2">
+              {selected === getCorrectIndex() ? (
+                <>
+                  <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-semibold text-green-400">Corretto!</span>
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-semibold text-red-400">Sbagliato</span>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
-}
-
-function generateQuiz(topic) {
-  const quizzes = {
-    'semafori': [
-      { question: 'Cosa fa il metodo WaitOne() su un semaforo?', options: ['Rilascia il semaforo', 'Attende che il semaforo sia disponibile (bloccante)', 'Distrugge il semaforo', 'Crea un nuovo thread'], correct: 1, explanation: 'WaitOne() blocca il thread finché il semaforo non è disponibile.' },
-      { question: 'Qual è il valore iniziale del semaforo in "new Semaphore(0, 1)"?', options: ['1', '0', '2', 'Non definito'], correct: 1, explanation: 'Il primo parametro è il conteggio iniziale, quindi il semaforo parte da 0 (non disponibile).' },
-      { question: 'Cosa succede se il produttore è più veloce del consumatore?', options: ['Il programma crasha', 'I dati vengono persi se non c\'è un buffer', 'Il semaforo si resetta', 'Il consumatore rallenta'], correct: 1, explanation: 'Senza buffer, un produttore più veloce causa perdita di dati.' },
-      { question: 'Quale semaforo controlla il produttore in un tipico scenario?', options: ['semc (consumatore)', 'semp (produttore)', 'entrambi', 'nessuno'], correct: 1, explanation: 'Il semaforo del produttore (semp) ne controlla la produzione.' },
-      { question: 'Cosa fa Release() sul semaforo?', options: ['Blocca il thread', 'Rilascia il semaforo incrementando il conteggio', 'Termina il thread', 'Crea un nuovo semaforo'], correct: 1, explanation: 'Release() incrementa il conteggio del semaforo, permettendo a un thread in attesa di procedere.' },
-    ],
-    'queue': [
-      { question: 'Quale classe .NET gestisce automaticamente la sincronizzazione produttore-consumatore?', options: ['List<T>', 'BlockingCollection<T>', 'Queue<T>', 'ConcurrentBag<T>'], correct: 1, explanation: 'BlockingCollection<T> implementa automaticamente la sincronizzazione.' },
-      { question: 'Cosa succede se tenti di prendere un elemento da una BlockingCollection vuota?', options: ['Ritorna null', 'Throws exception', 'Il thread si blocca finché non c\'è un elemento', 'Ritorna default(T)'], correct: 2, explanation: 'Take() blocca il thread finché non è disponibile un elemento.' },
-      { question: 'Quale metodo aggiunge elementi alla BlockingCollection?', options: ['Push()', 'Add()', 'Enqueue()', 'Insert()'], correct: 1, explanation: 'Add() aggiunge un elemento alla collection.' },
-      { question: 'Cosa indica IsCompleted?', options: ['La collection è piena', 'Non saranno aggiunti altri elementi', 'La collection è vuota', 'Errore di sincronizzazione'], correct: 1, explanation: 'IsCompleted indica che non verranno più aggiunti elementi.' },
-      { question: 'Come si segnala che non si aggiungeranno più elementi?', options: ['Close()', 'CompleteAdding()', 'Stop()', 'Finish()'], correct: 1, explanation: 'CompleteAdding() segnala la fine della produzione.' },
-    ],
-    'default': [
-      { question: 'Cos\'è il pattern produttore-consumatore?', options: ['Un pattern di design per l\'ereditarietà', 'Un pattern dove un thread produce dati e un altro li consuma', 'Un pattern per la gestione della memoria', 'Un pattern per il networking'], correct: 1, explanation: 'Il pattern coinvolge due entità che condividono un buffer di dati.' },
-      { question: 'Perché serve la sincronizzazione?', options: ['Per velocizzare il codice', 'Per evitare race conditions e accessi concorrenti', 'Per risparmiare memoria', 'Per gestire le eccezioni'], correct: 1, explanation: 'La sincronizzazione previene race conditions.' },
-      { question: 'Cosa è un semaforo?', options: ['Un tipo di variabile', 'Una variabile che conta le risorse disponibili', 'Un thread speciale', 'Un tipo di lock'], correct: 1, explanation: 'Il semaforo è un contatore di risorse disponibili.' },
-      { question: 'Cosa succede senza sincronizzazione?', options: ['Niente', 'Possibili race conditions e dati inconsistenti', 'Il programma è più veloce', 'Il compilatore dà errore'], correct: 1, explanation: 'Senza sincronizzazione, più thread possono accedere contemporaneamente causando inconsistenza.' },
-      { question: 'Quale namespace contiene le classi per i thread in C#?', options: ['System.IO', 'System.Threading', 'System.Collections', 'System.Net'], correct: 1, explanation: 'System.Threading contiene Thread, Semaphore, ecc.' },
-    ]
-  };
-  
-  return quizzes[topic] || quizzes['default'];
 }

@@ -1,0 +1,1665 @@
+{
+  "sections": [
+    {
+      "id": "base",
+      "title": "Concetti Fondamentali",
+      "quizzes": [
+        {
+          "id": "base1",
+          "title": "Pattern Base",
+          "questions": [
+            {"q": "Cos'è il pattern produttore-consumatore?", "o": ["Pattern UI", "Thread produce e consuma", "Database", "Thread singolo"], "c": 1},
+            {"q": "Quanti thread nel pattern base?", "o": ["1", "2", "3", "4"], "c": 1},
+            {"q": "Il produttore scrive, il consumatore legge", "t": "bool", "c": 0},
+            {"q": "Senza sinc. i dati sono sempre consistenti", "t": "bool", "c": 1},
+            {"q": "Thread.Sleep() simula lavoro", "t": "bool", "c": 0},
+            {"q": "A cosa serve la sincronizzazione?", "o": ["Velocizzare", "Evitare race conditions", "Creare thread", "Gestire errori"], "c": 1},
+            {"q": "Cos'è una race condition?", "o": ["Gara", "Accesso non sinc.", "Loop", "Thread"], "c": 1},
+            {"q": "Cos'è un buffer?", "o": ["Variabile", "Zona memoria condivisa", "Thread", "Semaforo"], "c": 1},
+            {"q": "Cos'è un thread?", "o": ["Variabile", "Unità esecuzione parallela", "Metodo", "Classe"], "c": 1},
+            {"q": "Serve sinc. tra thread", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "base2",
+          "title": "Variabili Condivise",
+          "questions": [
+            {"q": "Variabile locale può essere condivisa?", "t": "bool", "c": 1},
+            {"q": "static int n è condivisa tra thread", "t": "bool", "c": 0},
+            {"q": "Variabile globale definita dove?", "o": ["Inside Main", "Fuori metodi", "In ogni thread", "Non serve"], "c": 1},
+            {"q": "int n dentro Main() è condivisa?", "t": "bool", "c": 1},
+            {"q": "readonly per variabile condivisa?", "o": ["Si", "No", "Dipende", "Mai"], "c": 2},
+            {"q": "volatile usato per?", "o": ["Costante", "Visibilità thread", "Velocità", "Niente"], "c": 1},
+            {"q": "Race condition causa dati?", "o": ["Corretti", "Inconsistenti", "Persi", "Tutto OK"], "c": 1},
+            {"q": " sincronizzazione obbligatoria con var. condivise", "t": "bool", "c": 0},
+            {"q": "Console.WriteLine() è thread-safe in .NET", "t": "bool", "c": 0},
+            {"q": "lock() protegge variabile condivisa", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "base3",
+          "title": " lock statement",
+          "questions": [
+            {"q": "lock() richiede oggetto di riferimento", "t": "bool", "c": 0},
+            {"q": " lock(obj) blocca l'oggetto obj", "t": "bool", "c": 1},
+            {"q": "Più thread possono entrare nello stesso lock", "t": "bool", "c": 1},
+            {"q": "lock() è syntactic sugar per Monitor", "t": "bool", "c": 0},
+            {"q": "Monitor.Enter() e Exit() equivalente a lock", "t": "bool", "c": 0},
+            {"q": " deadlock se tutti lock stesso ordine", "t": "bool", "c": 1},
+            {"q": " deadlock se lock ordine inverso", "t": "bool", "c": 0},
+            {"q": " lock su stringa è problematico", "t": "bool", "c": 0},
+            {"q": " lock(this) è consigliato", "t": "bool", "c": 1},
+            {"q": "Best practice: lock su oggetto privato", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "base4",
+          "title": "Monitor",
+          "questions": [
+            {"q": "Monitor.Exit() rilascia lock", "t": "bool", "c": 0},
+            {"q": "Monitor.Wait() rilascia e aspetta notifica", "t": "bool", "c": 0},
+            {"q": "Monitor.Pulse() segnala a waiters", "t": "bool", "c": 0},
+            {"q": "Monitor.PulseAll() segnala a tutti", "t": "bool", "c": 0},
+            {"q": " lock è più semplice di Monitor", "t": "bool", "c": 0},
+            {"q": "Monitor è in System.Threading", "t": "bool", "c": 0},
+            {"q": "Monitor.Wait() richiede lock posseduto", "t": "bool", "c": 0},
+            {"q": "Pulse solo se lock posseduto", "t": "bool", "c": 0},
+            {"q": "Monitor usato per pattern prod-cons", "t": "bool", "c": 0},
+            {"q": "Monitor.Enter() può lanciare ex", "t": "bool", "c": 1}
+          ]
+        },
+        {
+          "id": "base5",
+          "title": "Interlocked",
+          "questions": [
+            {"q": "Interlocked.Increment() è atomica", "t": "bool", "c": 0},
+            {"q": "Interlocked.Decrement() restituisce nuovo valore", "t": "bool", "c": 1},
+            {"q": "Interlocked.Exchange() per scambiare", "t": "bool", "c": 0},
+            {"q": "Interlocked.CompareExchange() atomica", "t": "bool", "c": 0},
+            {"q": " ++n è thread-safe", "t": "bool", "c": 1},
+            {"q": " n++ è thread-safe", "t": "bool", "c": 1},
+            {"q": "Interlocked più veloce di lock", "t": "bool", "c": 0},
+            {"q": "Interlocked opera su long", "t": "bool", "c": 1},
+            {"q": "Interlocked.Add() per sommare", "t": "bool", "c": 0},
+            {"q": "Interlocked in System.Threading", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "base6",
+          "title": "Thread Lifecycle",
+          "questions": [
+            {"q": "Thread.Start() avvia subito", "t": "bool", "c": 0},
+            {"q": "Thread.Join() aspetta terminazione", "t": "bool", "c": 0},
+            {"q": "Thread.IsAlive indica se in esecuzione", "t": "bool", "c": 0},
+            {"q": "Thread.IsThreadPoolThread per thread pool", "t": "bool", "c": 0},
+            {"q": "Thread.Abort() è sicuro", "t": "bool", "c": 1},
+            {"q": "Thread.Interrupt() sveglia da WaitSleepJoin", "t": "bool", "c": 0},
+            {"q": "Thread.Suspend() deprecato", "t": "bool", "c": 0},
+            {"q": "Thread.Resume() per riprendere", "t": "bool", "c": 1},
+            {"q": "Foreground vs background differente", "t": "bool", "c": 0},
+            {"q": "Processo termina se solo thread background", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "base7",
+          "title": "ThreadPool",
+          "questions": [
+            {"q": "ThreadPool.QueueUserWorkItem() accoda lavoro", "t": "bool", "c": 0},
+            {"q": "ThreadPool.SetMinThreads() imposta minimo", "t": "bool", "c": 0},
+            {"q": "ThreadPool.GetAvailableThreads() ritorna disponibili", "t": "bool", "c": 0},
+            {"q": " threads nel pool sono worker threads", "t": "bool", "c": 0},
+            {"q": " thread pool usa lazy initialization", "t": "bool", "c": 1},
+            {"q": " ThreadPool gestisce dimensione automaticamente", "t": "bool", "c": 0},
+            {"q": " Too many threads = problema", "t": "bool", "c": 0},
+            {"q": " I/O async usa thread pool", "t": "bool", "c": 1},
+            {"q": "Task usa thread pool", "t": "bool", "c": 0},
+            {"q": "Thread pool ricicla thread", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "base8",
+          "title": "Task Library",
+          "questions": [
+            {"q": "Task.Run() usa thread pool", "t": "bool", "c": 0},
+            {"q": "Task.Result blocca se non completato", "t": "bool", "c": 0},
+            {"q": "Task.ContinueWith() esegue dopo", "t": "bool", "c": 0},
+            {"q": "Task.WaitAll() aspetta tutti", "t": "bool", "c": 0},
+            {"q": "Task.WhenAll() crea task che completa quando", "t": "bool", "c": 0},
+            {"q": "Task.WhenAny() crea task Primo completato", "t": "bool", "c": 0},
+            {"q": "async/await usa Task", "t": "bool", "c": 0},
+            {"q": " await usabile solo in async", "t": "bool", "c": 0},
+            {"q": "ConfigureAwait(false) salta context", "t": "bool", "c": 0},
+            {"q": "Task.FromResult() per risultato sync", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "base9",
+          "title": "Cancellation",
+          "questions": [
+            {"q": "CancellationToken usato per annullare", "t": "bool", "c": 0},
+            {"q": "ThrowIfCancellationRequested() se cancellato", "t": "bool", "c": 0},
+            {"q": "Token linkabile con TokenSource", "t": "bool", "c": 0},
+            {"q": "Cancel() sincrono", "t": "bool", "c": 1},
+            {"q": "IsCancellationRequested subito true", "t": "bool", "c": 0},
+            {"q": "OperationCanceledException se cancelled", "t": "bool", "c": 0},
+            {"q": " finally eseguito dopo cancel", "t": "bool", "c": 0},
+            {"q": " CancellationToken può essere copiato", "t": "bool", "c": 1},
+            {"q": " Nessun overhead con token", "t": "bool", "c": 1},
+            {"q": "Register() associa callback", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "base10",
+          "title": "Error Handling",
+          "questions": [
+            {"q": "Eccezioni non gestite terminano processo", "t": "bool", "c": 0},
+            {"q": " AppDomain.UnhandledException cattura", "t": "bool", "c": 0},
+            {"q": " Task eccezione propagata in .Result", "t": "bool", "c": 0},
+            {"q": " AggregateException contiene inner", "t": "bool", "c": 0},
+            {"q": " .InnerExceptions per eccezioni inner", "t": "bool", "c": 0},
+            {"q": " Observe() per ignorare eccezioni", "t": "bool", "c": 1},
+            {"q": " try-catch in thread non cattura main", "t": "bool", "c": 0},
+            {"q": " ThreadPool capturedui exception", "t": "bool", "c": 1},
+            {"q": " Log and swallow è pratica common", "t": "bool", "c": 1},
+            {"q": " Usa cancellation per graceful stop", "t": "bool", "c": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "semaphore",
+      "title": "Semafori",
+      "quizzes": [
+        {
+          "id": "sem1",
+          "title": "Semaphore Base",
+          "questions": [
+            {"q": "In Semaphore(0,1) valore iniziale?", "o": ["0", "1", "2", "Dipende"], "c": 0},
+            {"q": "In Semaphore(1,1) valore max?", "o": ["0", "1", "2", "Dipende"], "c": 1},
+            {"q": "WaitOne() blocca se contatore = 0", "t": "bool", "c": 0},
+            {"q": "Release() incrementa contatore", "t": "bool", "c": 0},
+            {"q": "Release(2) incrementa di 2", "t": "bool", "c": 0},
+            {"q": "Semaphore è thread-safe", "t": "bool", "c": 0},
+            {"q": "SemaphoreSlim è più leggero", "t": "bool", "c": 0},
+            {"q": "WaitAsync() per async", "t": "bool", "c": 0},
+            {"q": " Release() può lanciare exc", "t": "bool", "c": 0},
+            {"q": "Semaphore.Dispose() rilascia risorse", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sem2",
+          "title": "Sem Produttore",
+          "questions": [
+            {"q": "semp inizializzato a 1 nel pattern", "t": "bool", "c": 0},
+            {"q": "Produttore chiama semp.WaitOne()", "t": "bool", "c": 0},
+            {"q": "Dopo WaitOne() produttore produce", "t": "bool", "c": 0},
+            {"q": "Produttore chiama semc.Release()", "t": "bool", "c": 0},
+            {"q": "Se semc=1, rilascio consumatore", "t": "bool", "c": 0},
+            {"q": "semp=0 dopo WaitOne()", "t": "bool", "c": 0},
+            {"q": "Thread.Sleep() nel produttore", "t": "bool", "c": 0},
+            {"q": "Console.WriteLine() nel produttore", "t": "bool", "c": 0},
+            {"q": "semp decrementato da WaitOne()", "t": "bool", "c": 0},
+            {"q": "semp blocca se >0", "t": "bool", "c": 1}
+          ]
+        },
+        {
+          "id": "sem3",
+          "title": "Sem Consumatore",
+          "questions": [
+            {"q": "semc inizializzato a 0", "t": "bool", "c": 0},
+            {"q": "Consumatore chiama semc.WaitOne()", "t": "bool", "c": 0},
+            {"q": "Dopo WaitOne() consumatore consuma", "t": "bool", "c": 0},
+            {"q": "Consumatore chiama semc.Release()", "t": "bool", "c": 1},
+            {"q": "semc.Release() sblocca produttore", "t": "bool", "c": 0},
+            {"q": "semc=1 dopo WaitOne()", "t": "bool", "c": 0},
+            {"q": "Thread.Sleep() nel consumatore", "t": "bool", "c": 0},
+            {"q": "n = 0 dopo consumo", "t": "bool", "c": 0},
+            {"q": "semc = 0 dopo WaitOne()", "t": "bool", "c": 0},
+            {"q": "Consumatore bloccato se semc = 0", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sem4",
+          "title": "Semaforo vs Mutex",
+          "questions": [
+            {"q": "Mutex usa NamedEntity per risorse", "t": "bool", "c": 1},
+            {"q": "Mutex.WaitOne() come Semaphore", "t": "bool", "c": 0},
+            {"q": "Mutex.Release() rilascia lock", "t": "bool", "c": 0},
+            {"q": "Mutex è recursive", "t": "bool", "c": 1},
+            {"q": "Semaphore non è recursive", "t": "bool", "c": 0},
+            {"q": "Mutex per exclusion mutua", "t": "bool", "c": 0},
+            {"q": "Semaphore per conteggio risorse", "t": "bool", "c": 0},
+            {"q": "Mutex.Dispose() alla fine", "t": "bool", "c": 0},
+            {"q": "Mutex per threadpool OK", "t": "bool", "c": 1},
+            {"q": "Semaphore può essere interprocess", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sem5",
+          "title": "SemaphoreSlim",
+          "questions": [
+            {"q": "SemaphoreSlim è lightweight", "t": "bool", "c": 0},
+            {"q": "Wait() blocca thread", "t": "bool", "c": 0},
+            {"q": "WaitAsync() per async", "t": "bool", "c": 0},
+            {"q": "CurrentCount proprietà", "t": "bool", "c": 0},
+            {"q": "Release() come Semaphore", "t": "bool", "c": 0},
+            {"q": "Dispose() implementa IDisposable", "t": "bool", "c": 0},
+            {"q": "SemaphoreSlim per WaitHandle", "t": "bool", "c": 1},
+            {"q": "Costruttore SemaphoreSlim(0)", "t": "bool", "c": 0},
+            {"q": "AvailableWaitHandle per segnale", "t": "bool", "c": 0},
+            {"q": "Multiple Release() atomiche", "t": "bool", "c": 1}
+          ]
+        },
+        {
+          "id": "sem6",
+          "title": "Multiple Producers",
+          "questions": [
+            {"q": "Più produttori servono più semafori", "t": "bool", "c": 1},
+            {"q": "Semaforo condiviso tra produttori", "t": "bool", "c": 0},
+            {"q": "Problemi con race condition prod.", "t": "bool", "c": 0},
+            {"q": "Soluzione: lock o Interlocked", "t": "bool", "c": 0},
+            {"q": " semc.Count() > 1 per più consumatori", "t": "bool", "c": 1},
+            {"q": " Ogni Release() corrisponde a WaitOne()", "t": "bool", "c": 0},
+            {"q": " Deadlock se Release manca", "t": "bool", "c": 0},
+            {"q": " Starvation se tanti produttori", "t": "bool", "c": 0},
+            {"q": " Produttori veloci = buffer pieno", "t": "bool", "c": 0},
+            {"q": " Semc iniziale 0 bloccante", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sem7",
+          "title": "Multiple Consumers",
+          "questions": [
+            {"q": "Più consumatori condividono semc", "t": "bool", "c": 0},
+            {"q": " semc iniziale 1 = 1 consumatore", "t": "bool", "c": 1},
+            {"q": "Ogni consumatore WaitOne()", "t": "bool", "c": 0},
+            {"q": "Ogni consumatore Release(1)", "t": "bool", "c": 0},
+            {"q": "semc.Release(1) sblocca 1 produttore", "t": "bool", "c": 0},
+            {"q": "semc iniziale = num consumatori", "t": "bool", "c": 1},
+            {"q": "Race condition su n", "t": "bool", "c": 0},
+            {"q": "lock() protegge n", "t": "bool", "c": 0},
+            {"q": "Consumatore può consumare dato sbagliato", "t": "bool", "c": 1},
+            {"q": "Soluzione: lock su consume", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sem8",
+          "title": "Semaphores in C#",
+          "questions": [
+            {"q": "using System.Threading", "t": "bool", "c": 0},
+            {"q": " Semaphore(n,m) n<=m", "t": "bool", "c": 0},
+            {"q": "WaitHandle per segnalamento", "t": "bool", "c": 1},
+            {"q": " Semaphore implementa WaitHandle", "t": "bool", "c": 0},
+            {"q": " SafeWaitHandle proprietà", "t": "bool", "c": 0},
+            {"q": "Close() libera risorse", "t": "bool", "c": 1},
+            {"q": " IDisposable per cleanup", "t": "bool", "c": 0},
+            {"q": " Named semaphores esistono", "t": "bool", "c": 1},
+            {"q": " SemaphoreOpenExisting() per named", "t": "bool", "c": 0},
+            {"q": " Security attributes opzionali", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sem9",
+          "title": "Producer-Consumer Delay",
+          "questions": [
+            {"q": "Thread.Sleep(500) nel consumatore", "t": "bool", "c": 0},
+            {"q": " Thread.Sleep(200) nel produttore", "t": "bool", "c": 0},
+            {"q": "Produttore più veloce = buffer pieno", "t": "bool", "c": 0},
+            {"q": " Consumatore più veloce = buffer vuoto", "t": "bool", "c": 0},
+            {"q": " Add() su coda piena blocca", "t": "bool", "c": 0},
+            {"q": " Take() su coda vuota blocca", "t": "bool", "c": 0},
+            {"q": " Completing = nessun altro produttore", "t": "bool", "c": 0},
+            {"q": " IsAddingCompleted = coda in sola lettura", "t": "bool", "c": 1},
+            {"q": "TryTake() non bloccante", "t": "bool", "c": 0},
+            {"q": "TryAdd() non bloccante", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sem10",
+          "title": "Advanced Semaphores",
+          "questions": [
+            {"q": "Semaphore come Contador binario", "t": "bool", "c": 1},
+            {"q": " Mutex come semaforo binario", "t": "bool", "c": 0},
+            {"q": "ReaderWriterLock per lettori multipli", "t": "bool", "c": 0},
+            {"q": "AcquireReaderLock() blocking", "t": "bool", "c": 0},
+            {"q": "AcquireWriterLock() esclusivo", "t": "bool", "c": 0},
+            {"q": " ReaderLock = rilascia su Release", "t": "bool", "c": 1},
+            {"q": "WriterLock = lock esclusivo", "t": "bool", "c": 0},
+            {"q": " RWLock più scalabile di lock", "t": "bool", "c": 0},
+            {"q": "Downgrade da writer a reader", "t": "bool", "c": 1},
+            {"q": " Upgrade da reader a writer", "t": "bool", "c": 1}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "queue",
+      "title": "BlockingCollection",
+      "quizzes": [
+        {
+          "id": "queue1",
+          "title": "BlockingCollection Base",
+          "questions": [
+            {"q": "BlockingCollection<T> è thread-safe", "t": "bool", "c": 0},
+            {"q": "Take() su coda vuota blocca", "t": "bool", "c": 0},
+            {"q": "Add() su coda piena blocca", "t": "bool", "c": 0},
+            {"q": "TryTake() out param per valore", "t": "bool", "c": 0},
+            {"q": "TryAdd() out param per successo", "t": "bool", "c": 0},
+            {"q": "BlockingCollection<int>(10) = max 10", "t": "bool", "c": 0},
+            {"q": "IsCompleted = nessun prodotto", "t": "bool", "c": 0},
+            {"q": "IsAddingCompleted = prod finiti", "t": "bool", "c": 0},
+            {"q": "CompleteAdding() segnala fine", "t": "bool", "c": 0},
+            {"q": "GetConsumingEnumerable() per iterare", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "queue2",
+          "title": "Add/Take Methods",
+          "questions": [
+            {"q": "Add() aggiunge elemento", "t": "bool", "c": 0},
+            {"q": "Take() rimuove elemento", "t": "bool", "c": 0},
+            {"q": "Add() throws InvalidOperation se full", "t": "bool", "c": 1},
+            {"q": "Take() throwsInvalidOperation se empty", "t": "bool", "c": 1},
+            {"q": "Add(param,token) cancellabile", "t": "bool", "c": 0},
+            {"q": "Take(param,token) cancellabile", "t": "bool", "c": 0},
+            {"q": "Timeout in Add()", "t": "bool", "c": 0},
+            {"q": "Timeout in Take()", "t": "bool", "c": 0},
+            {"q": "Add() non bloccante", "t": "bool", "c": 1},
+            {"q": "Take() non bloccante", "t": "bool", "c": 1}
+          ]
+        },
+        {
+          "id": "queue3",
+          "title": "Bounded Capacity",
+          "questions": [
+            {"q": "BoundedCapacity = capienza max", "t": "bool", "c": 0},
+            {"q": "Default bounded capacity = infinite", "t": "bool", "c": 0},
+            {"q": "SetBoundedCapacity() dopo creazione", "t": "bool", "c": 1},
+            {"q": "Count = elementi attuali", "t": "bool", "c": 0},
+            {"q": "RemainingCapacity = liberi", "t": "bool", "c": 0},
+            {"q": "TryAdd() con timeout", "t": "bool", "c": 0},
+            {"q": "TryTake() con timeout", "t": "bool", "c": 0},
+            {"q": "Add() se full aspetta", "t": "bool", "c": 1},
+            {"q": "Take() se empty aspetta", "t": "bool", "c": 0},
+            {"q": "CompleteAdding() stoppa Add()", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "queue4",
+          "title": "Producer Pattern",
+          "questions": [
+            {"q": "Produttore chiama Add()", "t": "bool", "c": 0},
+            {"q": "Produttore aggiunge dati", "t": "bool", "c": 0},
+            {"q": "n++ prima di Add()", "t": "bool", "c": 0},
+            {"q": "Console.WriteLine() dopo Add()", "t": "bool", "c": 0},
+            {"q": "Thread.Sleep() per delay", "t": "bool", "c": 0},
+            {"q": "while(true) loop", "t": "bool", "c": 0},
+            {"q": "Add() gestisce sincronizzazione", "t": "bool", "c": 0},
+            {"q": "Semaphore non necessario", "t": "bool", "c": 0},
+            {"q": "CompleteAdding() quando finito", "t": "bool", "c": 0},
+            {"q": "Add()throws se coda full", "t": "bool", "c": 1}
+          ]
+        },
+        {
+          "id": "queue5",
+          "title": "Consumer Pattern",
+          "questions": [
+            {"q": "Consumatore chiama Take()", "t": "bool", "c": 0},
+            {"q": "Take() estrae dati", "t": "bool", "c": 0},
+            {"q": "n = coda.Take()", "t": "bool", "c": 0},
+            {"q": "Console.WriteLine() dopo Take()", "t": "bool", "c": 0},
+            {"q": "Thread.Sleep() per delay", "t": "bool", "c": 0},
+            {"q": "while(true) loop", "t": "bool", "c": 0},
+            {"q": "Take() gestisce sincronizzazione", "t": "bool", "c": 0},
+            {"q": "Semaphore non necessario", "t": "bool", "c": 0},
+            {"q": "IsCompleted per finito", "t": "bool", "c": 0},
+            {"q": "Take() throws se empty", "t": "bool", "c": 1}
+          ]
+        },
+        {
+          "id": "queue6",
+          "title": "ConcurrentQueue",
+          "questions": [
+            {"q": "ConcurrentQueue<T> è lock-free", "t": "bool", "c": 0},
+            {"q": "Enqueue() aggiunge", "t": "bool", "c": 0},
+            {"q": "TryDequeue() rimuove", "t": "bool", "c": 0},
+            {"q": "IsEmpty proprietà", "t": "bool", "c": 0},
+            {"q": "Count proprietà approximation", "t": "bool", "c": 0},
+            {"q": "ConcurrentQueue non bounded", "t": "bool", "c": 0},
+            {"q": " BlockingQueue = ConcurrentQueue wrap", "t": "bool", "c": 0},
+            {"q": "GetEnumerator() snapshot", "t": "bool", "c": 1},
+            {"q": "ToArray() copia", "t": "bool", "c": 0},
+            {"q": " ConcurrentBag simile", "t": "bool", "c": 1}
+          ]
+        },
+        {
+          "id": "queue7",
+          "title": "ConcurrentStack",
+          "questions": [
+            {"q": "Push() aggiunge in cima", "t": "bool", "c": 0},
+            {"q": "TryPop() rimuove", "t": "bool", "c": 0},
+            {"q": "IsEmpty proprietà", "t": "bool", "c": 0},
+            {"q": "LIFO order", "t": "bool", "c": 0},
+            {"q": "Non thread-safe", "t": "bool", "c": 1},
+            {"q": " ConcurrentStack in System.Collections.Concurrent", "t": "bool", "c": 0},
+            {"q": "Clear() metodo", "t": "bool", "c": 1},
+            {"q": "GetEnumerator() snapshot", "t": "bool", "c": 0},
+            {"q": "ToArray() copia", "t": "bool", "c": 0},
+            {"q": "PushRange() bulk insert", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "queue8",
+          "title": "ConcurrentBag",
+          "questions": [
+            {"q": "Add() aggiunge elemento", "t": "bool", "c": 0},
+            {"q": "TryTake() rimuove random", "t": "bool", "c": 0},
+            {"q": "TryPeek() guarda primo", "t": "bool", "c": 0},
+            {"q": "IsEmpty proprietà", "t": "bool", "c": 0},
+            {"q": "Unordered collection", "t": "bool", "c": 0},
+            {"q": "Thread-specific lists", "t": "bool", "c": 0},
+            {"q": " GetEnumerator() snapshot", "t": "bool", "c": 0},
+            {"q": "ToArray() copia", "t": "bool", "c": 0},
+            {"q": "Zero contention teoricamente", "t": "bool", "c": 0},
+            {"q": " Non blocking", "t": "bool", "c": 1}
+          ]
+        },
+        {
+          "id": "queue9",
+          "title": "Producer-Consumer Scope",
+          "questions": [
+            {"q": "BC<T> static dentro Main", "t": "bool", "c": 1},
+            {"q": "BC<T> come parametro thread", "t": "bool", "c": 0},
+            {"q": "Lambda cattura BC", "t": "bool", "c": 1},
+            {"q": "ref/out per BC", "t": "bool", "c": 1},
+            {"q": "BC disposable", "t": "bool", "c": 0},
+            {"q": "Dispose() blocca fino empty", "t": "bool", "c": 1},
+            {"q": "CompleteAdding per consumatori", "t": "bool", "c": 0},
+            {"q": "GetConsumingEnumerable()", "t": "bool", "c": 0},
+            {"q": "foreach su enumerable blocca", "t": "bool", "c": 0},
+            {"q": " CancellationToken supportato", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "queue10",
+          "title": "Advanced Queue",
+          "questions": [
+            {"q": "AddToAny() a più code", "t": "bool", "c": 1},
+            {"q": "TakeFromAny() da più code", "t": "bool", "c": 0},
+            {"q": "BlockingCollection<T> implementa IEnumerable", "t": "bool", "c": 0},
+            {"q": "CopyTo() array", "t": "bool", "c": 0},
+            {"q": "ToArray() new array", "t": "bool", "c": 0},
+            {"q": "Producing/consuming simultaneo OK", "t": "bool", "c": 0},
+            {"q": "Multiple producers OK", "t": "bool", "c": 0},
+            {"q": "Multiple consumers OK", "t": "bool", "c": 0},
+            {"q": "Order preserved FIFO", "t": "bool", "c": 0},
+            {"q": "Fairness configurabile", "t": "bool", "c": 1}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "busywait",
+      "title": "Busy Waiting",
+      "quizzes": [
+        {
+          "id": "bw1",
+          "title": "Busy Wait Base",
+          "questions": [
+            {"q": "while(n==0); è busy wait", "t": "bool", "c": 0},
+            {"q": "Busy wait consuma CPU", "t": "bool", "c": 0},
+            {"q": "Busy wait = anti-pattern", "t": "bool", "c": 0},
+            {"q": " Thread.Sleep(0) elimina busy wait", "t": "bool", "c": 1},
+            {"q": " SpinWait non consuma 100%", "t": "bool", "c": 0},
+            {"q": "SpinWait.SpinOnce() yield CPU", "t": "bool", "c": 0},
+            {"q": "while(!condition) Thread.Sleep(1)", "t": "bool", "c": 1},
+            {"q": " Spinlock per dati", "t": "bool", "c": 0},
+            {"q": "Monitor è meglio di busy wait", "t": "bool", "c": 0},
+            {"q": "Semaphore è meglio di busy wait", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "bw2",
+          "title": "Problemi Busy Wait",
+          "questions": [
+            {"q": "100% CPU usage", "t": "bool", "c": 0},
+            {"q": "Cache invalidation", "t": "bool", "c": 0},
+            {"q": " starvation altri thread", "t": "bool", "c": 0},
+            {"q": "Power waste", "t": "bool", "c": 0},
+            {"q": " Scalabilità pessima", "t": "bool", "c": 0},
+            {"q": " Race condition più probabile", "t": "bool", "c": 0},
+            {"q": " Difficultà debug", "t": "bool", "c": 0},
+            {"q": "Funziona comunque", "t": "bool", "c": 1},
+            {"q": "Su hyperthread peggio", "t": "bool", "c": 0},
+            {"q": " Memory barrier a volte necessario", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "bw3",
+          "title": "Spinlock",
+          "questions": [
+            {"q": "SpinLock è struct", "t": "bool", "c": 0},
+            {"q": "Enter() bloca finché acquisito", "t": "bool", "c": 0},
+            {"q": "TryEnter() non bloccante", "t": "bool", "c": 0},
+            {"q": "IsOwnerHeld proprietà", "t": "bool", "c": 0},
+            {"q": "Dispose() per rilasciare", "t": "bool", "c": 1},
+            {"q": " Thread.MemoryBarrier() opera", "t": "bool", "c": 1},
+            {"q": "Volatile.Read() acquisisce", "t": "bool", "c": 0},
+            {"q": "Volatile.Write() pubblica", "t": "bool", "c": 0},
+            {"q": "SpinLock per breve attesa", "t": "bool", "c": 0},
+            {"q": "SpinLock.LockTaken dopo failure", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "bw4",
+          "title": "SpinWait",
+          "questions": [
+            {"q": "SpinWait è struct", "t": "bool", "c": 0},
+            {"q": "SpinOnce() yielding dopo spin", "t": "bool", "c": 0},
+            {"q": "NextSpinWillYield proprietà", "t": "bool", "c": 0},
+            {"q": "SpinCount proprietà", "t": "bool", "c": 0},
+            {"q": "Reset() per reinit", "t": "bool", "c": 0},
+            {"q": "SpinUntil() attende condizione", "t": "bool", "c": 0},
+            {"q": " CPU relax dopo 10 spin", "t": "bool", "c": 1},
+            {"q": "SpinWait.NextSpinWillYield", "t": "bool", "c": 0},
+            {"q": "Yield() Thread.Yield()", "t": "bool", "c": 0},
+            {"q": "SpinUntil() con timeout", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "bw5",
+          "title": "Alternatives",
+          "questions": [
+            {"q": "Semaphore è alternativa", "t": "bool", "c": 0},
+            {"q": "Monitor.Escape() non esiste", "t": "bool", "c": 1},
+            {"q": " lock() è migliore", "t": "bool", "c": 0},
+            {"q": "EventWaitHandle segnala", "t": "bool", "c": 0},
+            {"q": " ManualResetEvent", "t": "bool", "c": 0},
+            {"q": "AutoResetEvent", "t": "bool", "c": 0},
+            {"q": "Condition variables in C# raw", "t": "bool", "c": 1},
+            {"q": " Monitor.Wait() equivalente", "t": "bool", "c": 0},
+            {"q": " BlockingCollection meglio", "t": "bool", "c": 0},
+            {"q": "TaskCompletionSource", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "bw6",
+          "title": "Producer Busy Wait",
+          "questions": [
+            {"q": "while(n!=0); nel produttore", "t": "bool", "c": 0},
+            {"q": " busy wait produttore", "t": "bool", "c": 0},
+            {"q": "Problemi same as consumer", "t": "bool", "c": 0},
+            {"q": " Thread.Sleep(1) aiuta", "t": "bool", "c": 0},
+            {"q": "Semaphore replacement", "t": "bool", "c": 0},
+            {"q": "n=0 dopo consume", "t": "bool", "c": 0},
+            {"q": "n++ produce", "t": "bool", "c": 0},
+            {"q": " Console.WriteLine() nella loop", "t": "bool", "c": 0},
+            {"q": "Thread.Sleep(200) delay", "t": "bool", "c": 0},
+            {"q": " Race condition se non atomic", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "bw7",
+          "title": "Consumer Busy Wait",
+          "questions": [
+            {"q": "while(n==0); nel consumatore", "t": "bool", "c": 0},
+            {"q": "busy wait consumatore", "t": "bool", "c": 0},
+            {"q": "100% CPU consumption", "t": "bool", "c": 0},
+            {"q": "Thread.Sleep(1) aiuta", "t": "bool", "c": 0},
+            {"q": "Semaphore replacement", "t": "bool", "c": 0},
+            {"q": "n = 0 dopo read", "t": "bool", "c": 0},
+            {"q": "Console.WriteLine(n)", "t": "bool", "c": 0},
+            {"q": "Thread.Sleep(500) delay", "t": "bool", "c": 0},
+            {"q": " Race condition se n++ non atomic", "t": "bool", "c": 0},
+            {"q": " Memory fence necessario", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "bw8",
+          "title": "Volatile",
+          "questions": [
+            {"q": "volatile read always fresh", "t": "bool", "c": 0},
+            {"q": "volatile write immediate visibility", "t": "bool", "c": 0},
+            {"q": "volatile fixes busy wait", "t": "bool", "c": 0},
+            {"q": "volatile per bool flag", "t": "bool", "c": 0},
+            {"q": "volatile not for long/double on x86", "t": "bool", "c": 1},
+            {"q": "Thread.VolatileRead() API", "t": "bool", "c": 1},
+            {"q": "Thread.VolatileWrite() API", "t": "bool", "c": 0},
+            {"q": "Memory barrier implicito con lock", "t": "bool", "c": 0},
+            {"q": "volatile eliminates need for fence", "t": "bool", "c": 0},
+            {"q": "volatile slower than normal read", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "bw9",
+          "title": "Memory Fence",
+          "questions": [
+            {"q": "MemoryBarrier() full fence", "t": "bool", "c": 0},
+            {"q": "AcquireFence() for read", "t": "bool", "c": 0},
+            {"q": "ReleaseFence() for write", "t": "bool", "c": 0},
+            {"q": "lock() contains fence", "t": "bool", "c": 0},
+            {"q": "Interlocked contains fence", "t": "bool", "c": 0},
+            {"q": "Thread.MemoryBarrier() obsolete", "t": "bool", "c": 1},
+            {"q": ".full fence = full memory barrier", "t": "bool", "c": 0},
+            {"q": "Hardware fence vs software fence", "t": "bool", "c": 0},
+            {"q": "processor-specific semantics", "t": "bool", "c": 0},
+            {"q": ".dword compiler reorder", "t": "bool", "c": 1}
+          ]
+        },
+        {
+          "id": "bw10",
+          "title": "Best Practice",
+          "questions": [
+            {"q": "Never use busy wait in production", "t": "bool", "c": 0},
+            {"q": "Use BlockingCollection", "t": "bool", "c": 0},
+            {"q": "Use Semaphore", "t": "bool", "c": 0},
+            {"q": "Use lock()", "t": "bool", "c": 0},
+            {"q": "spin for microseconds OK", "t": "bool", "c": 0},
+            {"q": "SpinWait for short wait", "t": "bool", "c": 0},
+            {"q": "Profile before optimize", "t": "bool", "c": 0},
+            {"q": "Use profiler", "t": "bool", "c": 0},
+            {"q": "CPU bound = busy wait bad", "t": "bool", "c": 0},
+            {"q": "I/O bound = blocking OK", "t": "bool", "c": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "thread",
+      "title": "Thread in C#",
+      "quizzes": [
+        {
+          "id": "thread1",
+          "title": "Creating Threads",
+          "questions": [
+            {"q": "new Thread(method) crea thread", "t": "bool", "c": 0},
+            {"q": "Thread.Start() avvia", "t": "bool", "c": 0},
+            {"q": "Thread constructor prende Delegate", "t": "bool", "c": 0},
+            {"q": "ThreadStart vs ParameterizedThreadStart", "o": ["Same", "Param allowed", "No thread", "Memory"], "c": 1},
+            {"q": "Start(Object) per param", "t": "bool", "c": 0},
+            {"q": "Lambda come thread method", "t": "bool", "c": 0},
+            {"q": "Thread joinable", "t": "bool", "c": 1},
+            {"q": "IsBackground per background thread", "t": "bool", "c": 0},
+            {"q": "Name proprietà", "t": "bool", "c": 0},
+            {"q": "Priority = AboveNormal", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "thread2",
+          "title": "Thread Properties",
+          "questions": [
+            {"q": "Thread.ManagedThreadId unique", "t": "bool", "c": 0},
+            {"q": "Thread.Name setOnce", "t": "bool", "c": 0},
+            {"q": "ThreadState enum values", "t": "bool", "c": 0},
+            {"q": "IsAlive = running", "t": "bool", "c": 0},
+            {"q": "IsBackground = backing", "t": "bool", "c": 0},
+            {"q": "CurrentThread static prop", "t": "bool", "c": 0},
+            {"q": "Thread.CurrentThread.Name", "t": "bool", "c": 0},
+            {"q": " ApartmentState for COM", "t": "bool", "c": 0},
+            {"q": " SetApartmentState before Start", "t": "bool", "c": 0},
+            {"q": " ExecutionContext flows", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "thread3",
+          "title": "Thread Methods",
+          "questions": [
+            {"q": "Join() aspetta completamento", "t": "bool", "c": 0},
+            {"q": "Join(timeout) con timeout", "t": "bool", "c": 0},
+            {"q": "Sleep(milliseconds) blocca", "t": "bool", "c": 0},
+            {"q": "Sleep(0) yield CPU", "t": "bool", "c": 1},
+            {"q": "SpinWait(milliseconds) busy wait", "t": "bool", "c": 1},
+            {"q": "Interrupt() sveglia", "t": "bool", "c": 0},
+            {"q": "Abort() kill thread", "t": "bool", "c": 0},
+            {"q": "Resume() continue", "t": "bool", "c": 1},
+            {"q": "Suspend() pause", "t": "bool", "c": 0},
+            {"q": " VolatileStop() no-op", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "thread4",
+          "title": "Static Variables",
+          "questions": [
+            {"q": "static int n condivisa", "t": "bool", "c": 0},
+            {"q": "static field thread-safe", "t": "bool", "c": 1},
+            {"q": "static readonly protetto", "t": "bool", "c": 1},
+            {"q": "ThreadStatic attribute", "t": "bool", "c": 0},
+            {"q": "[ThreadStatic] per thread-local", "t": "bool", "c": 0},
+            {"q": "ThreadStatic init solo primo thread", "t": "bool", "c": 0},
+            {"q": " ThreadLocal<T> per thread-local", "t": "bool", "c": 0},
+            {"q": "LocalDataStoreSlot legacy", "t": "bool", "c": 1},
+            {"q": " CallContext.LogicalSet for flow", "t": "bool", "c": 0},
+            {"q": " AsyncLocal<T> for flow", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "thread5",
+          "title": "Thread Parameters",
+          "questions": [
+            {"q": "Pass param via Start(object)", "t": "bool", "c": 0},
+            {"q": "Use lambda with closure", "t": "bool", "c": 0},
+            {"q": "ThreadStart不接受 params", "t": "bool", "c": 0},
+            {"q": "ParameterizedThreadStart takes object", "t": "bool", "c": 0},
+            {"q": "Lambda captures local var dangerous", "t": "bool", "c": 0},
+            {"q": " Use local copy in loop", "t": "bool", "c": 0},
+            {"q": "For loop capture issue", "t": "bool", "c": 0},
+            {"q": "Capture uses final value", "t": "bool", "c": 0},
+            {"q": " Copy to local for safe", "t": "bool", "c": 0},
+            {"q": "Ref/Out not allowed", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "thread6",
+          "title": "Thread Safety",
+          "questions": [
+            {"q": "Console.WriteLine() thread-safe", "t": "bool", "c": 0},
+            {"q": "List<T> thread-safe", "t": "bool", "c": 1},
+            {"q": "ConcurrentQueue for thread-safe queue", "t": "bool", "c": 0},
+            {"q": "lock for protect shared", "t": "bool", "c": 0},
+            {"q": "Interlocked for counters", "t": "bool", "c": 0},
+            {"q": " volatile for flags", "t": "bool", "c": 0},
+            {"q": " Immutable types always safe", "t": "bool", "c": 0},
+            {"q": "Read thread-safe if no write", "t": "bool", "c": 0},
+            {"q": "Static method multiple threads OK", "t": "bool", "c": 0},
+            {"q": "Instance method needs sync", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "thread7",
+          "title": "Thread Exceptions",
+          "questions": [
+            {"q": "Unhandled in thread = process crash", "t": "bool", "c": 0},
+            {"q": " Try-catch in thread isolates", "t": "bool", "c": 0},
+            {"q": "ThreadException event for UI", "t": "bool", "c": 0},
+            {"q": "AppDomain.UnhandledException event", "t": "bool", "c": 0},
+            {"q": "IsTerminating property", "t": "bool", "c": 0},
+            {"q": "Rethrow in catch preserves stack", "t": "bool", "c": 1},
+            {"q": "AggregateException groups multiple", "t": "bool", "c": 0},
+            {"q": "HandleCorruptedStateCatchRecover", "t": "bool", "c": 1},
+            {"q": " ExecutionContext.SuppressFlow()", "t": "bool", "c": 0},
+            {"q": "Security critical for catch", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "thread8",
+          "title": "Foregroun vs Background",
+          "questions": [
+            {"q": "Foreground block exit", "t": "bool", "c": 0},
+            {"q": "Background does not block exit", "t": "bool", "c": 0},
+            {"q": "ThreadPool thread = background", "t": "bool", "c": 0},
+            {"q": "IsBackground property", "t": "bool", "c": 0},
+            {"q": " Default for new Thread = foreground", "t": "bool", "c": 0},
+            {"q": "Foreground.Start() daemon", "t": "bool", "c": 1},
+            {"q": " process exit waits foregrounds", "t": "bool", "c": 0},
+            {"q": "Background useful for services", "t": "bool", "c": 0},
+            {"q": " .NET threadpool background", "t": "bool", "c": 0},
+            {"q": " Timer callback background", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "thread9",
+          "title": "Priority",
+          "questions": [
+            {"q": "Thread.Priority enum values", "t": "bool", "c": 0},
+            {"q": "Highest = runs first", "t": "bool", "c": 0},
+            {"q": "Lowest = last", "t": "bool", "c": 0},
+            {"q": "AboveNormal above normal", "t": "bool", "c": 0},
+            {"q": "BelowNormal below normal", "t": "bool", "c": 0},
+            {"q": "OS priority may ignore", "t": "bool", "c": 0},
+            {"q": "Process.PriorityClass separate", "t": "bool", "c": 0},
+            {"q": "Elevated priority needs security", "t": "bool", "c": 0},
+            {"q": "Dont change unless needed", "t": "bool", "c": 0},
+            {"q": "May cause starvation", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "thread10",
+          "title": "Advanced Thread",
+          "questions": [
+            {"q": "ExecutionContext flows to async", "t": "bool", "c": 0},
+            {"q": "SecurityContext for security", "t": "bool", "c": 0},
+            {"q": "SynchronizationContext for UI", "t": "bool", "c": 0},
+            {"q": "CancellationToken flows to async", "t": "bool", "c": 0},
+            {"q": "HostExecutionContext", "t": "bool", "c": 0},
+            {"q": "Thread.Abort deprecated", "t": "bool", "c": 0},
+            {"q": "Thread.Suspend/Resume deprecated", "t": "bool", "c": 0},
+            {"q": "Use Task instead of Thread", "t": "bool", "c": 0},
+            {"q": "async/await built on Task", "t": "bool", "c": 0},
+            {"q": "Parallel.ForEach uses threads", "t": "bool", "c": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pipe",
+      "title": "Named Pipe",
+      "quizzes": [
+        {
+          "id": "pipe1",
+          "title": "Named Pipe Base",
+          "questions": [
+            {"q": "NamedPipeServerStream per server", "t": "bool", "c": 0},
+            {"q": "NamedPipeClientStream per client", "t": "bool", "c": 0},
+            {"q": "WaitForConnection() bloccante", "t": "bool", "c": 0},
+            {"q": "PipeDirection enumeration", "t": "bool", "c": 0},
+            {"q": "PipeDirection.InOut = duplex", "t": "bool", "c": 0},
+            {"q": "PipeOptions Async enable async", "t": "bool", "c": 0},
+            {"q": "PipeTransmissionMode.Byte", "t": "bool", "c": 0},
+            {"q": "PipeTransmissionMode.Message", "t": "bool", "c": 0},
+            {"q": "System.IO.Pipes namespace", "t": "bool", "c": 0},
+            {"q": "Dispose() per cleanup", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "pipe2",
+          "title": "Server Side",
+          "questions": [
+            {"q": "new NamedPipeServerStream(name)", "t": "bool", "c": 0},
+            {"q": "WaitForConnection() blocks", "t": "bool", "c": 0},
+            {"q": "After connect get stream", "t": "bool", "c": 0},
+            {"q": "Read() per dati", "t": "bool", "c": 0},
+            {"q": "Write() per inviare", "t": "bool", "c": 0},
+            {"q": "Flush() per buffer", "t": "bool", "c": 0},
+            {"q": "IsConnected property", "t": "bool", "c": 0},
+            {"q": "CanRead, CanWrite properties", "t": "bool", "c": 0},
+            {"q": "WaitForConnectionAsync() async", "t": "bool", "c": 0},
+            {"q": "MaxNumberOfServerInstances", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "pipe3",
+          "title": "Client Side",
+          "questions": [
+            {"q": "new NamedPipeClientStream()", "t": "bool", "c": 0},
+            {"q": "Connect() al server", "t": "bool", "c": 0},
+            {"q": "Connect(timeout) con timeout", "t": "bool", "c": 0},
+            {"q": "Read() per dati", "t": "bool", "c": 0},
+            {"q": "Write() per inviare", "t": "bool", "c": 0},
+            {"q": "Flush() per buffer", "t": "bool", "c": 0},
+            {"q": "IsConnected proprietà", "t": "bool", "c": 0},
+            {"q": "CanRead, CanWrite", "t": "bool", "c": 0},
+            {"q": " ConnectAsync() async", "t": "bool", "c": 0},
+            {"q": "RemoteMachine name", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "pipe4",
+          "title": "IPC Concepts",
+          "questions": [
+            {"q": "IPC = Inter-Process Comm", "t": "bool", "c": 0},
+            {"q": "Named Pipe Windows only", "t": "bool", "c": 0},
+            {"q": "Anonymous Pipe = unnamed", "t": "bool", "c": 0},
+            {"q": "PipeSecurity per security", "t": "bool", "c": 0},
+            {"q": "PipeAccessRights for permissions", "t": "bool", "c": 0},
+            {"q": "PipeAuditRule per audit", "t": "bool", "c": 0},
+            {"q": "PipeOwner per owner", "t": "bool", "c": 0},
+            {"q": "Bidirectional pipe", "t": "bool", "c": 0},
+            {"q": " Half-duplex default", "t": "bool", "c": 1},
+            {"q": "Message mode per message", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "pipe5",
+          "title": "Pipe Message",
+          "questions": [
+            {"q": "Message mode = discrete", "t": "bool", "c": 0},
+            {"q": "WriteMessage() invia mess", "t": "bool", "c": 0},
+            {"q": "ReadMessage() receive msg", "t": "bool", "c": 0},
+            {"q": "Byte mode = stream", "t": "bool", "c": 0},
+            {"q": "Message mode overhead", "t": "bool", "c": 0},
+            {"q": "Message boundary preserved", "t": "bool", "c": 0},
+            {"q": " Read may return partial", "t": "bool", "c": 1},
+            {"q": "Buffer size matters", "t": "bool", "c": 0},
+            {"q": "Use length prefix for custom", "t": "bool", "c": 0},
+            {"q": "ReadAsync for async", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "pipe6",
+          "title": "Multiple Clients",
+          "questions": [
+            {"q": "Loop for multiple clients", "t": "bool", "c": 0},
+            {"q": "Each client = new stream", "t": "bool", "c": 0},
+            {"q": "Thread per client pattern", "t": "bool", "c": 0},
+            {"q": "Async per client", "t": "bool", "c": 0},
+            {"q": "MaxNumberOfServerInstances", "t": "bool", "c": 0},
+            {"q": " Jed client = Jed stream", "t": "bool", "c": 0},
+            {"q": "Disconnect before reconnect", "t": "bool", "c": 0},
+            {"q": "Server needs to handle", "t": "bool", "c": 0},
+            {"q": "ThreadPool for threads", "t": "bool", "c": 0},
+            {"q": "Task async per client", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "pipe7",
+          "title": "Transmitting Data",
+          "questions": [
+            {"q": "StreamWriter for text", "t": "bool", "c": 0},
+            {"q": "StreamReader for text", "t": "bool", "c": 0},
+            {"q": "BinaryWriter for binary", "t": "bool", "c": 0},
+            {"q": "BinaryReader for binary", "t": "bool", "c": 0},
+            {"q": "BitConverter for int<->bytes", "t": "bool", "c": 0},
+            {"q": "Encoding.UTF8.GetBytes()", "t": "bool", "c": 0},
+            {"q": "Length prefix protocol", "t": "bool", "c": 0},
+            {"q": "Read exact bytes", "t": "bool", "c": 0},
+            {"q": "While null for end", "t": "bool", "c": 1},
+            {"q": "Flush needed", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "pipe8",
+          "title": "Error Handling",
+          "questions": [
+            {"q": " IOException on disconnect", "t": "bool", "c": 0},
+            {"q": " TimeoutException if timeout", "t": "bool", "c": 0},
+            {"q": " InvalidOperationException", "t": "bool", "c": 0},
+            {"q": " UnauthorizedAccessException", "t": "bool", "c": 0},
+            {"q": " Handle close = disconnect", "t": "bool", "c": 0},
+            {"q": "Try-catch per errori", "t": "bool", "c": 0},
+            {"q": " IsConnected check", "t": "bool", "c": 0},
+            {"q": "Read() returns 0 = closed", "t": "bool", "c": 0},
+            {"q": "ReadAsync throws on close", "t": "bool", "c": 0},
+            {"q": " Always verify connected", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "pipe9",
+          "title": "Async Pipe",
+          "questions": [
+            {"q": "PipeOptions.Asynchronous flag", "t": "bool", "c": 0},
+            {"q": "ReadAsync() async", "t": "bool", "c": 0},
+            {"q": "WriteAsync() async", "t": "bool", "c": 0},
+            {"q": "WaitForConnectionAsync() async", "t": "bool", "c": 0},
+            {"q": "ConnectAsync() async", "t": "bool", "c": 0},
+            {"q": "async/await usable", "t": "bool", "c": 0},
+            {"q": " await stream.ReadAsync()", "t": "bool", "c": 0},
+            {"q": " await stream.WriteAsync()", "t": "bool", "c": 0},
+            {"q": " CancellationToken supportato", "t": "bool", "c": 0},
+            {"q": " async for scalability", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "pipe10",
+          "title": "Performance",
+          "questions": [
+            {"q": "Named pipe > socket local", "t": "bool", "c": 0},
+            {"q": " No network stack overhead", "t": "bool", "c": 0},
+            {"q": " Memory-mapped I/O", "t": "bool", "c": 1},
+            {"q": " Buffer size impacts perf", "t": "bool", "c": 0},
+            {"q": " Flush() to guarantee send", "t": "bool", "c": 0},
+            {"q": "Async > sync per parallelism", "t": "bool", "c": 0},
+            {"q": "Thread per connection overhead", "t": "bool", "c": 0},
+            {"q": "Async per connection better", "t": "bool", "c": 0},
+            {"q": "Read buffer <= write bufsize", "t": "bool", "c": 0},
+            {"q": " Multiple client server loop", "t": "bool", "c": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "socket",
+      "title": "Socket TCP",
+      "quizzes": [
+        {
+          "id": "sock1",
+          "title": "Socket Basics",
+          "questions": [
+            {"q": "IPAddress.Loopback = 127.0.0.1", "t": "bool", "c": 0},
+            {"q": "Socket TCP = Stream", "t": "bool", "c": 0},
+            {"q": "AddressFamily.InterNetwork = IPv4", "t": "bool", "c": 0},
+            {"q": "SocketType.Stream = TCP", "t": "bool", "c": 0},
+            {"q": "ProtocolType.Tcp", "t": "bool", "c": 0},
+            {"q": " Bind() associa address+port", "t": "bool", "c": 0},
+            {"q": "Listen() per listen", "t": "bool", "c": 0},
+            {"q": "Accept() retorna new socket", "t": "bool", "c": 0},
+            {"q": "Connect() per client", "t": "bool", "c": 0},
+            {"q": "Close() libera", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sock2",
+          "title": "Server Socket",
+          "questions": [
+            {"q": "new Socket(IPv4,Stream,TCP)", "t": "bool", "c": 0},
+            {"q": " server Socket non invia dati", "t": "bool", "c": 0},
+            {"q": " Accept() returns client socket", "t": "bool", "c": 0},
+            {"q": "Listen(5) backlog size", "t": "bool", "c": 0},
+            {"q": "Bind(IPEndPoint)", "t": "bool", "c": 0},
+            {"q": " Bind then Listen", "t": "bool", "c": 0},
+            {"q": " Accept blocks finché client", "t": "bool", "c": 0},
+            {"q": " While true loop per multi", "t": "bool", "c": 0},
+            {"q": " Thread per client", "t": "bool", "c": 0},
+            {"q": " Listen() dopo Bind()", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sock3",
+          "title": "Client Socket",
+          "questions": [
+            {"q": "Connect() al server", "t": "bool", "c": 0},
+            {"q": " Connect blocks", "t": "bool", "c": 0},
+            {"q": " Connect timeout optional", "t": "bool", "c": 0},
+            {"q": " Send() per inviare", "t": "bool", "c": 0},
+            {"q": " Receive() per ricevere", "t": "bool", "c": 0},
+            {"q": " Close() per chiudere", "t": "bool", "c": 0},
+            {"q": " Tries to reconnect on fail", "t": "bool", "c": 0},
+            {"q": "Connected property", "t": "bool", "c": 0},
+            {"q": " ReuseAddress option", "t": "bool", "c": 0},
+            {"q": " LingerOption per close", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sock4",
+          "title": "Send/Receive",
+          "questions": [
+            {"q": "Send(byte[]) invia dati", "t": "bool", "c": 0},
+            {"q": "Receive(byte[]) riceve", "t": "bool", "c": 0},
+            {"q": "Send() può inviare parziale", "t": "bool", "c": 0},
+            {"q": "Receive() può ricevere parziale", "t": "bool", "c": 0},
+            {"q": "BitConverter.GetBytes(int)", "t": "bool", "c": 0},
+            {"q": "BitConverter.ToInt32(bytes,0)", "t": "bool", "c": 0},
+            {"q": "Encoding.ASCII.GetBytes()", "t": "bool", "c": 0},
+            {"q": "Encoding.ASCII.GetString()", "t": "bool", "c": 0},
+            {"q": "ArraySegment per scatter-gather", "t": "bool", "c": 0},
+            {"q": " MSG_PEEK ispeziona", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sock5",
+          "title": "Data Protocol",
+          "questions": [
+            {"q": "Length prefix common", "t": "bool", "c": 0},
+            {"q": "Fixed size per protocol", "t": "bool", "c": 0},
+            {"q": "Delimiter-based", "t": "bool", "c": 0},
+            {"q": " JSON framing", "t": "bool", "c": 0},
+            {"q": "Binary with length header", "t": "bool", "c": 0},
+            {"q": "Read exact bytes needed", "t": "bool", "c": 0},
+            {"q": "Loop until length gotten", "t": "bool", "c": 0},
+            {"q": "Send complete message", "t": "bool", "c": 0},
+            {"q": "Protocol per request/response", "t": "bool", "c": 0},
+            {"q": "State machine per parsing", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sock6",
+          "title": "Async Socket",
+          "questions": [
+            {"q": "BeginSend() old async", "t": "bool", "c": 1},
+            {"q": "EndSend() completa", "t": "bool", "c": 0},
+            {"q": "BeginReceive() old async", "t": "bool", "c": 1},
+            {"q": "EndReceive() completa", "t": "bool", "c": 0},
+            {"q": "Async pattern supportato", "t": "bool", "c": 0},
+            {"q": "SendAsync() new async", "t": "bool", "c": 0},
+            {"q": "ReceiveAsync() new async", "t": "bool", "c": 0},
+            {"q": "SocketAsyncEventArgs", "t": "bool", "c": 0},
+            {"q": " async/await usable", "t": "bool", "c": 0},
+            {"q": " CancellationToken supportato", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sock7",
+          "title": "Error Handling",
+          "questions": [
+            {"q": "SocketException on error", "t": "bool", "c": 0},
+            {"q": "Winsock error codes", "t": "bool", "c": 0},
+            {"q": "ErrorCode proprietà", "t": "bool", "c": 0},
+            {"q": "10053 = abort", "t": "bool", "c": 0},
+            {"q": "10054 = reset", "t": "bool", "c": 0},
+            {"q": "10060 = timeout", "t": "bool", "c": 0},
+            {"q": "Try-catch for errors", "t": "bool", "c": 0},
+            {"q": "Connected check before send", "t": "bool", "c": 0},
+            {"q": "Shutdown(Send) then Close", "t": "bool", "c": 0},
+            {"q": "Keepalive option", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sock8",
+          "title": "Options",
+          "questions": [
+            {"q": "NoDelay = disable Nagle", "t": "bool", "c": 0},
+            {"q": "ReceiveTimeout", "t": "bool", "c": 0},
+            {"q": "SendTimeout", "t": "bool", "c": 0},
+            {"q": "ReceiveBufferSize", "t": "bool", "c": 0},
+            {"q": "SendBufferSize", "t": "bool", "c": 0},
+            {"q": "LingerOption", "t": "bool", "c": 0},
+            {"q": "KeepAliveOption", "t": "bool", "c": 0},
+            {"q": "ReuseAddress", "t": "bool", "c": 0},
+            {"q": "ExclusiveAddressUse", "t": "bool", "c": 0},
+            {"q": " Set via SetSocketOption()", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sock9",
+          "title": "Multiple Clients",
+          "questions": [
+            {"q": "Thread per client", "t": "bool", "c": 0},
+            {"q": "Task per client", "t": "bool", "c": 0},
+            {"q": "ThreadPool for threads", "t": "bool", "c": 0},
+            {"q": "Async per client", "t": "bool", "c": 0},
+            {"q": "Select() for multiplexing", "t": "bool", "c": 1},
+            {"q": " Poll() for multiplexing", "t": "bool", "c": 0},
+            {"q": "Epoll on Linux", "t": "bool", "c": 0},
+            {"q": "BeginAccept() old async", "t": "bool", "c": 1},
+            {"q": "AcceptAsync() new", "t": "bool", "c": 0},
+            {"q": "Concurrent clients ok", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "sock10",
+          "title": "TCP vs UDP",
+          "questions": [
+            {"q": "TCP = connection-oriented", "t": "bool", "c": 0},
+            {"q": "UDP = connectionless", "t": "bool", "c": 0},
+            {"q": "TCP reliable", "t": "bool", "c": 0},
+            {"q": "UDP unreliable", "t": "bool", "c": 0},
+            {"q": "TCP ordered", "t": "bool", "c": 0},
+            {"q": "UDP no order", "t": "bool", "c": 0},
+            {"q": "TCP slower", "t": "bool", "c": 0},
+            {"q": "UDP faster", "t": "bool", "c": 0},
+            {"q": "UDP may drop", "t": "bool", "c": 0},
+            {"q": "TCP for critical data", "t": "bool", "c": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "memory",
+      "title": "Memoria Condivisa",
+      "quizzes": [
+        {
+          "id": "mem1",
+          "title": "Shared Memory",
+          "questions": [
+            {"q": "SharedMemory.dll needed", "t": "bool", "c": 0},
+            {"q": "MemoryMappedFile for shared", "t": "bool", "c": 0},
+            {"q": " Windows-only", "t": "bool", "c": 0},
+            {"q": "Fastest IPC mechanism", "t": "bool", "c": 0},
+            {"q": "MapViewOfFile access", "t": "bool", "c": 0},
+            {"q": "UnmapViewOfFile release", "t": "bool", "c": 0},
+            {"q": "FileShare.ReadWrite", "t": "bool", "c": 0},
+            {"q": "CreateOrOpen per nome", "t": "bool", "c": 0},
+            {"q": "Dispose() cleanup", "t": "bool", "c": 0},
+            {"q": "Memory stream fallback", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "mem2",
+          "title": "Memory-Mapped Files",
+          "questions": [
+            {"q": "MapViewOfFile() returns pointer", "t": "bool", "c": 0},
+            {"q": " FILE_MAP_WRITE", "t": "bool", "c": 0},
+            {"q": "FILE_MAP_READ", "t": "bool", "c": 0},
+            {"q": "UnmapViewOfFile() release", "t": "bool", "c": 0},
+            {"q": "FlushViewOfFile() write to disk", "t": "bool", "c": 0},
+            {"q": "CloseHandle() per file", "t": "bool", "c": 0},
+            {"q": "Marshal.Copy() interop", "t": "bool", "c": 0},
+            {"q": " SafeHandle wrapper", "t": "bool", "c": 0},
+            {"q": " .NET wrapper available", "t": "bool", "c": 0},
+            {"q": "Large files supported", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "mem3",
+          "title": "Sync Shared Memory",
+          "questions": [
+            {"q": "Atomic writes need sync", "t": "bool", "c": 0},
+            {"q": " lock() for protection", "t": "bool", "c": 0},
+            {"q": "Interlocked for counters", "t": "bool", "c": 0},
+            {"q": " Read-Many, Write-Single pattern", "t": "bool", "c": 0},
+            {"q": "Memory fence needed", "t": "bool", "c": 0},
+            {"q": "Volatile.Write() for publish", "t": "bool", "c": 0},
+            {"q": "Volatile.Read() for acquire", "t": "bool", "c": 0},
+            {"q": "Event for signals", "t": "bool", "c": 0},
+            {"q": " Mutex for lock", "t": "bool", "c": 0},
+            {"q": " Complex to implement", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "mem4",
+          "title": "Producer Shared Memory",
+          "questions": [
+            {"q": "Write to mapped memory", "t": "bool", "c": 0},
+            {"q": "Pointer to data", "t": "bool", "c": 0},
+            {"q": "Marshal.WriteInt32()", "t": "bool", "c": 0},
+            {"q": "Write() then signal", "t": "bool", "c": 0},
+            {"q": " Use event to signal", "t": "bool", "c": 0},
+            {"q": "SetEvent() for signal", "t": "bool", "c": 0},
+            {"q": "ReleaseMutex() to release", "t": "bool", "c": 1},
+            {"q": "WaitForSingleObject() wait", "t": "bool", "c": 0},
+            {"q": " Consumer reads", "t": "bool", "c": 0},
+            {"q": "Close handles when done", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "mem5",
+          "title": "Consumer Shared Memory",
+          "questions": [
+            {"q": "Read mapped memory", "t": "bool", "c": 0},
+            {"q": "Marshal.ReadInt32()", "t": "bool", "c": 0},
+            {"q": "Wait for signal", "t": "bool", "c": 0},
+            {"q": "WaitForSingleObject()", "t": "bool", "c": 0},
+            {"q": "ResetEvent() after read", "t": "bool", "c": 0},
+            {"q": "PulseEvent() alternative", "t": "bool", "c": 0},
+            {"q": " Release mutex", "t": "bool", "c": 0},
+            {"q": " Process data", "t": "bool", "c": 0},
+            {"q": " Signal ready for more", "t": "bool", "c": 0},
+            {"q": "Clean up handles", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "mem6",
+          "title": "Windows Memory",
+          "questions": [
+            {"q": "CreateFileMapping() crea", "t": "bool", "c": 0},
+            {"q": " MapViewOfFile() mappa", "t": "bool", "c": 0},
+            {"q": "PAGE_READWRITE protection", "t": "bool", "c": 0},
+            {"q": "FILE_MAP_ALL_ACCESS", "t": "bool", "c": 0},
+            {"q": "GetLastError() per error", "t": "bool", "c": 0},
+            {"q": "CloseHandle() close", "t": "bool", "c": 0},
+            {"q": "InvalidHandleValue check", "t": "bool", "c": 0},
+            {"q": "NULL for error", "t": "bool", "c": 0},
+            {"q": "Marshal.AllocHGlobal()", "t": "bool", "c": 0},
+            {"q": "Marshal.FreeHGlobal()", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "mem7",
+          "title": "Cross-Process",
+          "questions": [
+            {"q": "Named shared memory", "t": "bool", "c": 0},
+            {"q": "Same name opens same", "t": "bool", "c": 0},
+            {"q": "Process ID not needed", "t": "bool", "c": 0},
+            {"q": "Security descriptor", "t": "bool", "c": 0},
+            {"q": "Create globally", "t": "bool", "c": 0},
+            {"q": "Administrator for global", "t": "bool", "c": 0},
+            {"q": "Sync separate", "t": "bool", "c": 0},
+            {"q": "Clean up properly", "t": "bool", "c": 0},
+            {"q": " Use naming convention", "t": "bool", "c": 0},
+            {"q": "Access control", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "mem8",
+          "title": "Issues",
+          "questions": [
+            {"q": "64-bit address diff processes", "t": "bool", "c": 0},
+            {"q": "Virtual addresses differ", "t": "bool", "c": 0},
+            {"q": " Use offsets", "t": "bool", "c": 0},
+            {"q": "Pointer not shareable", "t": "bool", "c": 0},
+            {"q": "Marshal copy overhead", "t": "bool", "c": 0},
+            {"q": "Atomic operations needed", "t": "bool", "c": 0},
+            {"q": "Cache coherency issue", "t": "bool", "c": 0},
+            {"q": "Memory barrier needed", "t": "bool", "c": 0},
+            {"q": "CloseHandle() too early bad", "t": "bool", "c": 0},
+            {"q": "Process crash cleanup", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "mem9",
+          "title": "Performance",
+          "questions": [
+            {"q": "Fastest IPC", "t": "bool", "c": 0},
+            {"q": "No copy to kernel", "t": "bool", "c": 0},
+            {"q": "Direct memory access", "t": "bool", "c": 0},
+            {"q": "Cache-friendly", "t": "bool", "c": 0},
+            {"q": "Lower latency", "t": "bool", "c": 0},
+            {"q": "High bandwidth", "t": "bool", "c": 0},
+            {"q": "Overhead: sync", "t": "bool", "c": 0},
+            {"q": " Overhead: marshaling", "t": "bool", "c": 0},
+            {"q": "Large data benefit", "t": "bool", "c": 0},
+            {"q": "Small data less benefit", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "mem10",
+          "title": "Use Cases",
+          "questions": [
+            {"q": "Inter-process large data", "t": "bool", "c": 0},
+            {"q": " Real-time apps", "t": "bool", "c": 0},
+            {"q": " Database shared cache", "t": "bool", "c": 0},
+            {"q": " Gaming state", "t": "bool", "c": 0},
+            {"q": "Video frame buffer", "t": "bool", "c": 0},
+            {"q": " Not for beginners", "t": "bool", "c": 0},
+            {"q": "Pipe simpler for most", "t": "bool", "c": 0},
+            {"q": "Socket simpler", "t": "bool", "c": 0},
+            {"q": "Complex error handling", "t": "bool", "c": 0},
+            {"q": "Debug harder", "t": "bool", "c": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "comparison",
+      "title": "Confronto Pattern",
+      "quizzes": [
+        {
+          "id": "comp1",
+          "title": "Same Process",
+          "questions": [
+            {"q": "Variabile globale same process", "t": "bool", "c": 0},
+            {"q": " lock() same process", "t": "bool", "c": 0},
+            {"q": " Semaphore same process", "t": "bool", "c": 0},
+            {"q": " BlockingCollection same process", "t": "bool", "c": 0},
+            {"q": "Thread same process", "t": "bool", "c": 0},
+            {"q": "Task same process", "t": "bool", "c": 0},
+            {"q": "Monitor same process", "t": "bool", "c": 0},
+            {"q": "Interlocked same process", "t": "bool", "c": 0},
+            {"q": "Shared memory not needed", "t": "bool", "c": 0},
+            {"q": " Fastest approach", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "comp2",
+          "title": "Different Processes",
+          "questions": [
+            {"q": "Named Pipe inter-process", "t": "bool", "c": 0},
+            {"q": " Socket inter-process", "t": "bool", "c": 0},
+            {"q": "Shared Memory inter-process", "t": "bool", "c": 0},
+            {"q": " Memory-mapped files", "t": "bool", "c": 0},
+            {"q": "TCP localhost", "t": "bool", "c": 0},
+            {"q": "UDP inter-process", "t": "bool", "c": 0},
+            {"q": "Windows Messages", "t": "bool", "c": 0},
+            {"q": "RPC another way", "t": "bool", "c": 0},
+            {"q": "Named pipes fast", "t": "bool", "c": 0},
+            {"q": "Sockets cross-platform", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "comp3",
+          "title": "Network",
+          "questions": [
+            {"q": "TCP for network", "t": "bool", "c": 0},
+            {"q": "UDP for network", "t": "bool", "c": 0},
+            {"q": "HTTP over TCP", "t": "bool", "c": 0},
+            {"q": "WebSocket over TCP", "t": "bool", "c": 0},
+            {"q": "Named Pipe not network", "t": "bool", "c": 0},
+            {"q": "Shared Memory not network", "t": "bool", "c": 0},
+            {"q": "Sockets cross-platform", "t": "bool", "c": 0},
+            {"q": "SSL/TLS over TCP", "t": "bool", "c": 0},
+            {"q": "Port needed", "t": "bool", "c": 0},
+            {"q": " Firewall considerations", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "comp4",
+          "title": "Performance Comparison",
+          "questions": [
+            {"q": "Shared Memory fastest", "t": "bool", "c": 0},
+            {"q": "Named Pipe fastest IPC", "t": "bool", "c": 0},
+            {"q": "Socket overhead highest", "t": "bool", "c": 0},
+            {"q": "BlockingCollection overhead", "t": "bool", "c": 0},
+            {"q": "Semaphore overhead low", "t": "bool", "c": 0},
+            {"q": "Lock overhead low", "t": "bool", "c": 0},
+            {"q": "Memory map for large data", "t": "bool", "c": 0},
+            {"q": "Queue for buffered", "t": "bool", "c": 0},
+            {"q": "Buffer size matters", "t": "bool", "c": 0},
+            {"q": "Profile for decision", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "comp5",
+          "title": "Simplicity",
+          "questions": [
+            {"q": "BlockingCollection simplest", "t": "bool", "c": 0},
+            {"q": " lock() simple", "t": "bool", "c": 0},
+            {"q": "Socket complex", "t": "bool", "c": 0},
+            {"q": "Named Pipe simple", "t": "bool", "c": 0},
+            {"q": "Shared Memory complex", "t": "bool", "c": 0},
+            {"q": "Semaphore simple", "t": "bool", "c": 0},
+            {"q": "Start with simplest", "t": "bool", "c": 0},
+            {"q": "YAGNI for complex", "t": "bool", "c": 0},
+            {"q": "Premature optimization bad", "t": "bool", "c": 0},
+            {"q": "Requirements drive choice", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "comp6",
+          "title": "Scalability",
+          "questions": [
+            {"q": "Scaling = more work", "t": "bool", "c": 0},
+            {"q": "Thread scaling limit", "t": "bool", "c": 0},
+            {"q": "Async for scaling", "t": "bool", "c": 0},
+            {"q": "Task for scaling", "t": "bool", "c": 0},
+            {"q": "ThreadPool for scaling", "t": "bool", "c": 0},
+            {"q": "Socket scales well", "t": "bool", "c": 0},
+            {"q": "Named Pipelimited scalability", "t": "bool", "c": 0},
+            {"q": "Shared Memory limited by memory", "t": "bool", "c": 0},
+            {"q": "Consider CPU cores", "t": "bool", "c": 0},
+            {"q": "Consider I/O bound", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "comp7",
+          "title": "Cross-Platform",
+          "questions": [
+            {"q": "Socket cross-platform", "t": "bool", "c": 0},
+            {"q": "Named Pipe Windows only", "t": "bool", "c": 0},
+            {"q": "Shared Memory platform-specific", "t": "bool", "c": 0},
+            {"q": "Memory-mapped cross-platform", "t": "bool", "c": 0},
+            {"q": "HTTP cross-platform", "t": "bool", "c": 0},
+            {"q": "Rest APIs cross-platform", "t": "bool", "c": 0},
+            {"q": ".NET cross-platform", "t": "bool", "c": 0},
+            {"q": "Linux pipes", "t": "bool", "c": 0},
+            {"q": "Unix domain sockets", "t": "bool", "c": 0},
+            {"q": "Pick based on platform", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "comp8",
+          "title": "Debugging",
+          "questions": [
+            {"q": "Socket easiest debug", "t": "bool", "c": 0},
+            {"q": "Named Pipe easier debug", "t": "bool", "c": 0},
+            {"q": "Shared Memory harder", "t": "bool", "c": 0},
+            {"q": "Lock deadlock possible", "t": "bool", "c": 0},
+            {"q": "Race conditions hard", "t": "bool", "c": 0},
+            {"q": "Logging helps", "t": "bool", "c": 0},
+            {"q": "Wireshark for sockets", "t": "bool", "c": 0},
+            {"q": "ProcMon for IPC", "t": "bool", "c": 0},
+            {"q": "Debugger for same process", "t": "bool", "c": 0},
+            {"q": "Start simple to debug", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "comp9",
+          "title": "Reliability",
+          "questions": [
+            {"q": "TCP reliable", "o": ["UDP", "TCP", "Socket", "Named Pipe"], "c": 1},
+            {"q": "Socket reliable if TCP", "t": "bool", "c": 0},
+            {"q": "UDP best-effort", "t": "bool", "c": 0},
+            {"q": "Named Pipe reliable", "t": "bool", "c": 0},
+            {"q": "Shared Memory no built-in", "t": "bool", "c": 0},
+            {"q": "Retry logic needed", "t": "bool", "c": 0},
+            {"q": "Timeout needed", "t": "bool", "c": 0},
+            {"q": "Heartbeat", "t": "bool", "c": 0},
+            {"q": "Connection handling", "t": "bool", "c": 0},
+            {"q": "Graceful shutdown", "t": "bool", "c": 0},
+            {"q": "Error codes handle", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "comp10",
+          "title": "When to Use What",
+          "questions": [
+            {"q": "Same process = BlockingCollection", "t": "bool", "c": 0},
+            {"q": "Local IPC = Named Pipe", "t": "bool", "c": 0},
+            {"q": "Network = Socket", "t": "bool", "c": 0},
+            {"q": "High perf large data = ShMem", "t": "bool", "c": 0},
+            {"q": "Simple local = lock", "t": "bool", "c": 0},
+            {"q": "Cross-platform = Socket", "t": "bool", "c": 0},
+            {"q": "Cross-machine = Socket", "t": "bool", "c": 0},
+            {"q": "Begin with Socket", "t": "bool", "c": 1},
+            {"q": "Choose based on needs", "t": "bool", "c": 0},
+            {"q": "Requirements > preference", "t": "bool", "c": 0}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "advanced",
+      "title": "Approfondimenti",
+      "quizzes": [
+        {
+          "id": "adv1",
+          "title": "TPL",
+          "questions": [
+            {"q": "TPL = Task Parallel Library", "t": "bool", "c": 0},
+            {"q": "Task è astratto", "t": "bool", "c": 0},
+            {"q": "Parallel.For() parallel", "t": "bool", "c": 0},
+            {"q": "Parallel.ForEach() parallel", "t": "bool", "c": 0},
+            {"q": "Parallel.Invoke() parallel", "t": "bool", "c": 0},
+            {"q": "Partitioner per divide", "t": "bool", "c": 0},
+            {"q": "DegreeOfParallelism", "t": "bool", "c": 0},
+            {"q": "ParallelOptions", "t": "bool", "c": 0},
+            {"q": "CancellationToken", "t": "bool", "c": 0},
+            {"q": "Exception handling", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "adv2",
+          "title": "PLINQ",
+          "questions": [
+            {"q": "PLINQ = Parallel LINQ", "t": "bool", "c": 0},
+            {"q": "AsParallel() abilita PLINQ", "t": "bool", "c": 0},
+            {"q": "AsOrdered() order", "t": "bool", "c": 0},
+            {"q": "AsUnordered() for perf", "t": "bool", "c": 0},
+            {"q": "WithDegreeOfParallelism", "t": "bool", "c": 0},
+            {"q": "WithMergeOptions", "t": "bool", "c": 0},
+            {"q": "WithCancellation()", "t": "bool", "c": 0},
+            {"q": "ToArray() esegue", "t": "bool", "c": 0},
+            {"q": "ForAll() avoid ordering", "t": "bool", "c": 0},
+            {"q": "AggregateException may", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "adv3",
+          "title": "Dataflow",
+          "questions": [
+            {"q": "TPL Dataflow NuGet", "t": "bool", "c": 0},
+            {"q": "ActionBlock per action", "t": "bool", "c": 0},
+            {"q": "TransformBlock per transform", "t": "bool", "c": 0},
+            {"q": "BufferBlock per buffer", "t": "bool", "c": 0},
+            {"q": "BroadcastBlock per broadcast", "t": "bool", "c": 0},
+            {"q": "JoinBlock per join", "t": "bool", "c": 0},
+            {"q": "LinkTo() per pipeline", "t": "bool", "c": 0},
+            {"q": "MaxDegreeOfParallelism", "t": "bool", "c": 0},
+            {"q": "BoundedCapacity", "t": "bool", "c": 0},
+            {"q": "Completion property", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "adv4",
+          "title": "Channels",
+          "questions": [
+            {"q": "Channel<T> async queue", "t": "bool", "c": 0},
+            {"q": "Channel.CreateBounded()", "t": "bool", "c": 0},
+            {"q": "Channel.CreateUnbounded()", "t": "bool", "c": 0},
+            {"q": "Writer per write", "t": "bool", "c": 0},
+            {"q": "Reader per read", "t": "bool", "c": 0},
+            {"q": "WaitToWriteAsync()", "t": "bool", "c": 0},
+            {"q": "WaitToReadAsync()", "t": "bool", "c": 0},
+            {"q": "Complete() close", "t": "bool", "c": 0},
+            {"q": "TryRead() try", "t": "bool", "c": 0},
+            {"q": "TryWrite() try", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "adv5",
+          "title": "Async Await",
+          "questions": [
+            {"q": "async keyword", "t": "bool", "c": 0},
+            {"q": "await for async", "t": "bool", "c": 0},
+            {"q": "await unwraps Task", "t": "bool", "c": 0},
+            {"q": "async lambdas", "t": "bool", "c": 0},
+            {"q": "async void special", "t": "bool", "c": 0},
+            {"q": "ConfigureAwait for context", "t": "bool", "c": 0},
+            {"q": "TaskScheduler per scheduling", "t": "bool", "c": 0},
+            {"q": "SynchronizationContext", "t": "bool", "c": 0},
+            {"q": "Task.FromResult() sync result", "t": "bool", "c": 0},
+            {"q": "Task.CompletedTask", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "adv6",
+          "title": "Deadlock",
+          "questions": [
+            {"q": "Deadlock = circular wait", "t": "bool", "c": 0},
+            {"q": "Lock ordering avoids", "t": "bool", "c": 0},
+            {"q": "Timeout per detect", "t": "bool", "c": 0},
+            {"q": " TryLock() per avoid", "t": "bool", "c": 0},
+            {"q": "Monitor.TryEnter()", "t": "bool", "c": 0},
+            {"q": "lock timeout", "t": "bool", "c": 1},
+            {"q": "Async lock avoids sync deadlock", "t": "bool", "c": 0},
+            {"q": "SemaphoreSlim async", "t": "bool", "c": 0},
+            {"q": "AsyncEx async lock", "t": "bool", "c": 0},
+            {"q": " Design to avoid", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "adv7",
+          "title": "Producer Consumer with Dataflow",
+          "questions": [
+            {"q": "TransformBlock per stage", "t": "bool", "c": 0},
+            {"q": " ActionBlock per consumer", "t": "bool", "c": 0},
+            {"q": "Linked blocks pipeline", "t": "bool", "c": 0},
+            {"q": "BroadcastBlock multi consumers", "t": "bool", "c": 0},
+            {"q": "JoinBlock per join", "t": "bool", "c": 0},
+            {"q": "Propagates completion", "t": "bool", "c": 0},
+            {"q": "Fault propagates", "t": "bool", "c": 0},
+            {"q": "Complete() per end", "t": "bool", "c": 0},
+            {"q": " CancellationToken", "t": "bool", "c": 0},
+            {"q": "Memory bounded", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "adv8",
+          "title": "Channels Pattern",
+          "questions": [
+            {"q": "Producer writes to channel", "t": "bool", "c": 0},
+            {"q": " Consumer reads from channel", "t": "bool", "c": 0},
+            {"q": "Reader.Completion for done", "t": "bool", "c": 0},
+            {"q": "Writer.Completion for done", "t": "bool", "c": 0},
+            {"q": "Await reading in loop", "t": "bool", "c": 0},
+            {"q": "Await writing in loop", "t": "bool", "c": 0},
+            {"q": "CompleteWriting() per done", "t": "bool", "c": 0},
+            {"q": " CancellationToken support", "t": "bool", "c": 0},
+            {"q": "Multiple producers OK", "t": "bool", "c": 0},
+            {"q": "Multiple consumers OK", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "adv9",
+          "title": "Pipeline",
+          "questions": [
+            {"q": "Pipeline = chain of stages", "t": "bool", "c": 0},
+            {"q": "Stage output next input", "t": "bool", "c": 0},
+            {"q": "Parallel stages possible", "t": "bool", "c": 0},
+            {"q": "Backpressure per flow", "t": "bool", "c": 0},
+            {"q": "Bounded capacity", "t": "bool", "c": 0},
+            {"q": "Dataflow blocks", "t": "bool", "c": 0},
+            {"q": "Channels for pipeline", "t": "bool", "c": 0},
+            {"q": "Process in order", "t": "bool", "c": 0},
+            {"q": "Error per stage", "t": "bool", "c": 0},
+            {"q": "Completion per pipeline", "t": "bool", "c": 0}
+          ]
+        },
+        {
+          "id": "adv10",
+          "title": "Best Practices",
+          "questions": [
+            {"q": "Avoid shared mutable state", "t": "bool", "c": 0},
+            {"q": "Prefer immutability", "t": "bool", "c": 0},
+            {"q": "Use appropriate level", "t": "bool", "c": 0},
+            {"q": "Don't over-engineer", "t": "bool", "c": 0},
+            {"q": "Profile before optimizing", "t": "bool", "c": 0},
+            {"q": "Handle exceptions", "t": "bool", "c": 0},
+            {"q": "Graceful cancellation", "t": "bool", "c": 0},
+            {"q": "Cleanup resources", "t": "bool", "c": 0},
+            {"q": "Test concurrent", "t": "bool", "c": 0},
+            {"q": "Document design", "t": "bool", "c": 0}
+          ]
+        }
+      ]
+    }
+  ]
+}
